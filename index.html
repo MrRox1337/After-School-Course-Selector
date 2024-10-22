@@ -33,8 +33,8 @@
 							<!-- bind 'src' attr to product.image' in 'data' -->
 							<img v-bind:src="product.image" />
 						</figure>
-						<h2 v-text="product.title"></h2>
-						<p v-html="product.description"></p>
+						<h2 v-text="product.subject"></h2>
+						<p v-html="product.location"></p>
 
 						<p>Price: {{product.price}}</p>
 						<!-- <p>{{product.displayedInventory}} in stock</p> -->
@@ -44,9 +44,9 @@
 						</button>
 						<!-- <button @click="addItem"> Add to Cart </button> -->
 						<button v-else disabled="disabled">Add to Cart</button>
-						<span v-if="product.availableInventory === cartCount(product.id)">All out!</span>
-						<span v-else-if="product.availableInventory - cartCount(product.id) < 5">
-							Only {{product.availableInventory - cartCount(product.id)}} left!
+						<span v-if="product.spaces === cartCount(product.id)">All out!</span>
+						<span v-else-if="product.spaces - cartCount(product.id) < 5">
+							Only {{product.spaces - cartCount(product.id)}} left!
 						</span>
 						<span v-else>Buy now!</span>
 						<div>
@@ -104,8 +104,8 @@
 									<!-- bind 'src' attr to product.image' in 'data' -->
 									<img v-bind:src="item.image" />
 								</figure>
-								<h2 v-text="item.title"></h2>
-								<p v-html="item.description"></p>
+								<h2 v-text="item.subject"></h2>
+								<p v-html="item.location"></p>
 
 								<p>Price: {{item.price}}</p>
 							</div>
@@ -126,21 +126,22 @@
 				</div>
 			</main>
 		</div>
-		<script src="js/products.js"></script>
+		<script src="js/subjects.js"></script>
+
 		<script type="text/javascript">
 			let webstore = new Vue({
 				el: "#App",
 				data: {
-					sitename: "Vue.js Pet Depot",
+					sitename: "Afterschool Course Registration Tool",
 					showProduct: true,
 					product: {
 						id: 1001,
-						title: "Cat Food, 25lb bag",
-						description:
+						subject: "Cat Food, 25lb bag",
+						location:
 							"A 25 pound bag of <em>irresistible</em>," + "organic goodness for your cat.",
 						price: 2000,
 						image: "img/product1.gif",
-						availableInventory: 5,
+						spaces: 5,
 						rating: 3,
 					},
 					products: products,
@@ -185,7 +186,7 @@
 						return count;
 					},
 					canAddToCart(product) {
-						return product.availableInventory > this.cartCount(product.id);
+						return product.spaces > this.cartCount(product.id);
 					},
 				},
 				computed: {
@@ -193,7 +194,7 @@
 						return this.cart.length || "";
 					},
 					itemsLeft: function () {
-						return this.product.availableInventory - this.cartItemCount;
+						return this.product.spaces - this.cartItemCount;
 					},
 					sortedProducts() {
 						// the comparison function that defines the order
