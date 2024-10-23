@@ -120,7 +120,8 @@
                 },
                 methods: {
                     addToCart(subject) {
-                        this.cart.push(subject.id);
+                        // Add the full subject object to the cart
+                        this.cart.push(subject);
                     },
                     showCheckout: function () {
                         this.showSubject = this.showSubject ? false : true;
@@ -129,9 +130,10 @@
                         alert("Order submitted!");
                     },
                     cartCount(id) {
+                        // Count how many times a subject with this id is in the cart
                         let count = 0;
                         for (let i = 0; i < this.cart.length; i++) {
-                            if (this.cart[i] === id) {
+                            if (this.cart[i].id === id) {
                                 count++;
                             }
                         }
