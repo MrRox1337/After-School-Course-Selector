@@ -33,8 +33,8 @@
                             <!-- bind 'src' attr to subject.image' in 'data' -->
                             <img v-bind:src="subject.image" />
                         </figure>
-                        <h2 v-text="subject.subject"></h2>
-                        <p v-html="subject.location"></p>
+                        <h2>Subject: {{subject.subject}}</h2>
+                        <p>Location: {{subject.location}}</p>
 
                         <p>Price: {{subject.price}}</p>
                         <!-- <p>{{subject.displayedInventory}} in stock</p> -->
@@ -54,47 +54,6 @@
 
                 <!-- Checkout Page -->
                 <div v-else>
-                    <p>
-                        <strong>First Name: </strong>
-                        <input v-model.trim="order.firstName" />
-                    </p>
-                    <p>
-                        <strong>Last Name: </strong>
-                        <input v-model.trim="order.lastName" />
-                    </p>
-                    <p><strong>Address: </strong> <input v-model="order.address" /></p>
-                    <p><strong>City: </strong> <input v-model="order.city" /></p>
-                    <p>
-                        <strong>State: </strong>
-                        <select v-model="order.state" class="form-control">
-                            <option disabled value="">State</option>
-                            <option v-for="(state, code) in states" v-bind:value="states.AL">
-                                {{code}}
-                            </option>
-                        </select>
-                    </p>
-                    <p>
-                        <strong>Phone/Postal Code: </strong> <input v-model.number="order.phone" />
-                    </p>
-                    <p>
-                        <input
-                            type="checkbox"
-                            id="gift"
-                            value="true"
-                            v-model="order.gift"
-                            v-bind:true-value="order.sendGift"
-                            v-bind:false-value="order.dontSendGift"
-                        />
-                        <label for="gift">Ship as Gift?</label>
-                    </p>
-
-                    <p>
-                        <input type="radio" id="home" value="Home" v-model="order.method" />
-                        <label for="home">Home</label>
-                        <input type="radio" id="business" value="Business" v-model="order.method" />
-                        <label for="Business">Business</label>
-                    </p>
-
                     <h2>Order Information</h2>
                     <!-- Order Summary -->
                     <div>
@@ -112,6 +71,17 @@
                         </div>
                     </div>
 
+                    <p>
+                        <strong>First Name: </strong>
+                        <input v-model.trim="order.firstName" />
+                    </p>
+                    <p>
+                        <strong>Last Name: </strong>
+                        <input v-model.trim="order.lastName" />
+                    </p>
+                    <p>
+                        <strong>Phone/Postal Code: </strong> <input v-model.number="order.phone" />
+                    </p>
                     <!-- Recipient Information -->
                     <p>First Name: {{order.firstName}}</p>
                     <p>Last Name: {{order.lastName}}</p>
