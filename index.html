@@ -1,213 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Vue.js Afterschool Course Selector</title>
-		<script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
-		<link
-			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
-		/>
-	</head>
-	<body>
-		<div id="App">
-			<header>
-				<h1 v-text="sitename"></h1>
-				<!-- <h1>{{sitename}}</h1> -->
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Vue.js Afterschool Course Selector</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+        />
+    </head>
+    <body>
+        <div id="App">
+            <header>
+                <h1 v-text="sitename"></h1>
+                <!-- <h1>{{sitename}}</h1> -->
 
-				<button v-on:click="showCheckout">
-					<!-- cartItemCount is used the same way as a data property. -->
-					{{ cartItemCount }}
-					<!-- add the cart icon -->
-					<span class="fas fa-cart-plus"></span> Checkout
-				</button>
-			</header>
-			<main>
-				<!-- Product Catalog -->
-				<div v-if="showProduct">
-					<!-- Show Product Page -->
-					<!-- Edit sortedProducts to products if you want to swap between sorted and unsorted products list -->
-					<div v-for="product in sortedProducts">
-						<figure>
-							<!-- bind 'src' attr to product.image' in 'data' -->
-							<img v-bind:src="product.image" />
-						</figure>
-						<h2 v-text="product.subject"></h2>
-						<p v-html="product.location"></p>
+                <button v-on:click="showCheckout">
+                    <!-- cartItemCount is used the same way as a data property. -->
+                    {{ cartItemCount }}
+                    <!-- add the cart icon -->
+                    <span class="fas fa-cart-plus"></span> Checkout
+                </button>
+            </header>
+            <main>
+                <!-- Subject Catalog -->
+                <div v-if="showSubject">
+                    <!-- Show Subject Page -->
+                    <!-- Edit sortedSubjects to subjects if you want to swap between sorted and unsorted subjects list -->
+                    <div v-for="subject in sortedSubjects">
+                        <figure>
+                            <!-- bind 'src' attr to subject.image' in 'data' -->
+                            <img v-bind:src="subject.image" />
+                        </figure>
+                        <h2 v-text="subject.subject"></h2>
+                        <p v-html="subject.location"></p>
 
-						<p>Price: {{product.price}}</p>
-						<!-- <p>{{product.displayedInventory}} in stock</p> -->
+                        <p>Price: {{subject.price}}</p>
+                        <!-- <p>{{subject.displayedInventory}} in stock</p> -->
 
-						<button v-if="canAddToCart(product)" v-on:click="addToCart(product)">
-							Add to Cart
-						</button>
-						<!-- <button @click="addItem"> Add to Cart </button> -->
-						<button v-else disabled="disabled">Add to Cart</button>
-						<span v-if="product.spaces === cartCount(product.id)">All out!</span>
-						<span v-else-if="product.spaces - cartCount(product.id) < 5">
-							Only {{product.spaces - cartCount(product.id)}} left!
-						</span>
-						<span v-else>Buy now!</span>
-						<div>
-							<span v-for="n in product.rating">★</span>
-							<span v-for="n in 5 - product.rating">☆</span>
-						</div>
-					</div>
-				</div>
+                        <button v-if="canAddToCart(subject)" v-on:click="addToCart(subject)">
+                            Add to Cart
+                        </button>
+                        <!-- <button @click="addItem"> Add to Cart </button> -->
+                        <button v-else disabled="disabled">Add to Cart</button>
+                        <span v-if="subject.spaces === cartCount(subject.id)">All out!</span>
+                        <span v-else-if="subject.spaces - cartCount(subject.id) < 3">
+                            Only {{subject.spaces - cartCount(subject.id)}} left!
+                        </span>
+                        <span v-else>Buy now!</span>
+                    </div>
+                </div>
 
-				<!-- Checkout Page -->
-				<div v-else>
-					<p>
-						<strong>First Name: </strong>
-						<input v-model.trim="order.firstName" />
-					</p>
-					<p>
-						<strong>Last Name: </strong>
-						<input v-model.trim="order.lastName" />
-					</p>
-					<p><strong>Address: </strong> <input v-model="order.address" /></p>
-					<p><strong>City: </strong> <input v-model="order.city" /></p>
-					<p>
-						<strong>State: </strong>
-						<select v-model="order.state" class="form-control">
-							<option disabled value="">State</option>
-							<option v-for="(state, code) in states" v-bind:value="states.AL">{{code}}</option>
-						</select>
-					</p>
-					<p><strong>Zip/Postal Code: </strong> <input v-model.number="order.zip" /></p>
-					<p>
-						<input
-							type="checkbox"
-							id="gift"
-							value="true"
-							v-model="order.gift"
-							v-bind:true-value="order.sendGift"
-							v-bind:false-value="order.dontSendGift"
-						/>
-						<label for="gift">Ship as Gift?</label>
-					</p>
+                <!-- Checkout Page -->
+                <div v-else>
+                    <p>
+                        <strong>First Name: </strong>
+                        <input v-model.trim="order.firstName" />
+                    </p>
+                    <p>
+                        <strong>Last Name: </strong>
+                        <input v-model.trim="order.lastName" />
+                    </p>
+                    <p><strong>Address: </strong> <input v-model="order.address" /></p>
+                    <p><strong>City: </strong> <input v-model="order.city" /></p>
+                    <p>
+                        <strong>State: </strong>
+                        <select v-model="order.state" class="form-control">
+                            <option disabled value="">State</option>
+                            <option v-for="(state, code) in states" v-bind:value="states.AL">
+                                {{code}}
+                            </option>
+                        </select>
+                    </p>
+                    <p>
+                        <strong>Phone/Postal Code: </strong> <input v-model.number="order.phone" />
+                    </p>
+                    <p>
+                        <input
+                            type="checkbox"
+                            id="gift"
+                            value="true"
+                            v-model="order.gift"
+                            v-bind:true-value="order.sendGift"
+                            v-bind:false-value="order.dontSendGift"
+                        />
+                        <label for="gift">Ship as Gift?</label>
+                    </p>
 
-					<p>
-						<input type="radio" id="home" value="Home" v-model="order.method" />
-						<label for="home">Home</label>
-						<input type="radio" id="business" value="Business" v-model="order.method" />
-						<label for="Business">Business</label>
-					</p>
+                    <p>
+                        <input type="radio" id="home" value="Home" v-model="order.method" />
+                        <label for="home">Home</label>
+                        <input type="radio" id="business" value="Business" v-model="order.method" />
+                        <label for="Business">Business</label>
+                    </p>
 
-					<h2>Order Information</h2>
-					<!-- Order Summary -->
-					<div>
-						<div v-for="item in cart">
-							<div>
-								<figure>
-									<!-- bind 'src' attr to product.image' in 'data' -->
-									<img v-bind:src="item.image" />
-								</figure>
-								<h2 v-text="item.subject"></h2>
-								<p v-html="item.location"></p>
+                    <h2>Order Information</h2>
+                    <!-- Order Summary -->
+                    <div>
+                        <div v-for="item in cart">
+                            <div>
+                                <figure>
+                                    <!-- bind 'src' attr to subject.image' in 'data' -->
+                                    <img v-bind:src="item.image" />
+                                </figure>
+                                <h2 v-text="item.subject"></h2>
+                                <p v-html="item.location"></p>
 
-								<p>Price: {{item.price}}</p>
-							</div>
-						</div>
-					</div>
+                                <p>Price: {{item.price}}</p>
+                            </div>
+                        </div>
+                    </div>
 
-					<!-- Recipient Information -->
-					<p>First Name: {{order.firstName}}</p>
-					<p>Last Name: {{order.lastName}}</p>
-					<p>Address: {{order.address}}</p>
-					<p>City: {{order.city}}</p>
-					<p>State: {{order.state}}</p>
-					<p>Postal/Zip Code: {{order.zip}}</p>
-					<p>Shipping to: {{order.method}}</p>
-					<p>Ship as Gift: {{order.dontSendGift}}</p>
+                    <!-- Recipient Information -->
+                    <p>First Name: {{order.firstName}}</p>
+                    <p>Last Name: {{order.lastName}}</p>
+                    <p>Postal/Phone Code: {{order.phone}}</p>
 
-					<button v-on:click="submitForm">Place Order</button>
-				</div>
-			</main>
-		</div>
-		<script src="js/subjects.js"></script>
+                    <button v-on:click="submitForm">Place Order</button>
+                </div>
+            </main>
+        </div>
+        <script src="js/subjects.js"></script>
 
-		<script type="text/javascript">
-			let webstore = new Vue({
-				el: "#App",
-				data: {
-					sitename: "Afterschool Course Registration Tool",
-					showProduct: true,
-					product: {
-						id: 1001,
-						subject: "Cat Food, 25lb bag",
-						location:
-							"A 25 pound bag of <em>irresistible</em>," + "organic goodness for your cat.",
-						price: 2000,
-						image: "img/product1.gif",
-						spaces: 5,
-						rating: 3,
-					},
-					products: products,
-					order: {
-						firstName: "",
-						lastName: "",
-						address: "",
-						city: "",
-						state: "",
-						zip: "",
-						method: "",
-						gift: false,
-						sendGift: "Send as Gift",
-						dontSendGift: "Send as General",
-					},
-					states: {
-						AL: "Alabama",
-						AZ: "Arizona",
-						CA: "California",
-						NV: "Nevada",
-					},
-					cart: [],
-				},
-				methods: {
-					addToCart(product) {
-						this.cart.push(product.id);
-						// this.product.displayedInventory = this.product.displayedInventory - 1;
-					},
-					showCheckout: function () {
-						this.showProduct = this.showProduct ? false : true;
-					},
-					submitForm: function () {
-						alert("Order submitted!");
-					},
-					cartCount(id) {
-						let count = 0;
-						for (let i = 0; i < this.cart.length; i++) {
-							if (this.cart[i] === id) {
-								count++;
-							}
-						}
-						return count;
-					},
-					canAddToCart(product) {
-						return product.spaces > this.cartCount(product.id);
-					},
-				},
-				computed: {
-					cartItemCount: function () {
-						return this.cart.length || "";
-					},
-					itemsLeft: function () {
-						return this.product.spaces - this.cartItemCount;
-					},
-					sortedProducts() {
-						// the comparison function that defines the order
-						function compare(a, b) {
-							if (a.price > b.price) return 1;
-							if (a.price < b.price) return -1;
-							return 0; // if a.price === b.price
-						}
-						// sort the 'products' array and return it
-						return this.products.sort(compare);
-					},
-				},
-			});
-		</script>
-	</body>
+        <script type="text/javascript">
+            let webstore = new Vue({
+                el: "#App",
+                data: {
+                    sitename: "Afterschool Course Registration Tool",
+                    showSubject: true,
+                    subject: {
+                        id: 1001,
+                        subject: "Cat Food, 25lb bag",
+                        location:
+                            "A 25 pound bag of <em>irresistible</em>," +
+                            "organic goodness for your cat.",
+                        price: 2000,
+                        image: "img/subject1.gif",
+                        spaces: 5,
+                        rating: 3,
+                    },
+                    subjects: subjects,
+                    order: {
+                        firstName: "",
+                        lastName: "",
+                        phone: "",
+                    },
+                    states: {
+                        AL: "Alabama",
+                        AZ: "Arizona",
+                        CA: "California",
+                        NV: "Nevada",
+                    },
+                    cart: [],
+                },
+                methods: {
+                    addToCart(subject) {
+                        this.cart.push(subject.id);
+                        // this.subject.displayedInventory = this.subject.displayedInventory - 1;
+                    },
+                    showCheckout: function () {
+                        this.showSubject = this.showSubject ? false : true;
+                    },
+                    submitForm: function () {
+                        alert("Order submitted!");
+                    },
+                    cartCount(id) {
+                        let count = 0;
+                        for (let i = 0; i < this.cart.length; i++) {
+                            if (this.cart[i] === id) {
+                                count++;
+                            }
+                        }
+                        return count;
+                    },
+                    canAddToCart(subject) {
+                        return subject.spaces > this.cartCount(subject.id);
+                    },
+                },
+                computed: {
+                    cartItemCount: function () {
+                        return this.cart.length || "";
+                    },
+                    itemsLeft: function () {
+                        return this.subject.spaces - this.cartItemCount;
+                    },
+                    sortedSubjects() {
+                        // the comparison function that defines the order
+                        function compare(a, b) {
+                            if (a.price > b.price) return 1;
+                            if (a.price < b.price) return -1;
+                            return 0; // if a.price === b.price
+                        }
+                        // sort the 'subjects' array and return it
+                        return this.subjects.sort(compare);
+                    },
+                },
+            });
+        </script>
+    </body>
 </html>
