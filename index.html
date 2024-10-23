@@ -14,12 +14,9 @@
         <div id="App">
             <header>
                 <h1 v-text="sitename"></h1>
-                <!-- <h1>{{sitename}}</h1> -->
 
                 <button v-on:click="showCheckout">
-                    <!-- cartItemCount is used the same way as a data property. -->
                     {{ cartItemCount }}
-                    <!-- add the cart icon -->
                     <span class="fas fa-cart-plus"></span> Checkout
                 </button>
             </header>
@@ -30,7 +27,6 @@
                     <!-- Edit sortedSubjects to subjects if you want to swap between sorted and unsorted subjects list -->
                     <div v-for="subject in sortedSubjects">
                         <figure>
-                            <!-- bind 'src' attr to subject.image' in 'data' -->
                             <img v-bind:src="subject.image" />
                         </figure>
                         <h2 v-text="subject.subject"></h2>
@@ -41,7 +37,6 @@
                         <button v-if="canAddToCart(subject)" v-on:click="addToCart(subject)">
                             Add to Cart
                         </button>
-                        <!-- <button @click="addItem"> Add to Cart </button> -->
                         <button v-else disabled="disabled">Add to Cart</button>
                         <span v-if="subject.spaces === cartCount(subject.id)">All out!</span>
                         <span v-else-if="subject.spaces - cartCount(subject.id) < 3">
@@ -59,7 +54,6 @@
                         <div v-for="item in cart">
                             <div>
                                 <figure>
-                                    <!-- bind 'src' attr to subject.image' in 'data' -->
                                     <img v-bind:src="item.image" />
                                 </figure>
                                 <h2 v-text="item.subject"></h2>
@@ -90,8 +84,8 @@
                 </div>
             </main>
         </div>
-        <script src="js/subjects.js"></script>
 
+        <script src="js/subjects.js"></script>
         <script type="text/javascript">
             let webstore = new Vue({
                 el: "#App",
@@ -126,7 +120,6 @@
                 methods: {
                     addToCart(subject) {
                         this.cart.push(subject.id);
-                        // this.subject.displayedInventory = this.subject.displayedInventory - 1;
                     },
                     showCheckout: function () {
                         this.showSubject = this.showSubject ? false : true;
