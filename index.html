@@ -33,11 +33,10 @@
                             <!-- bind 'src' attr to subject.image' in 'data' -->
                             <img v-bind:src="subject.image" />
                         </figure>
-                        <h2>Subject: {{subject.subject}}</h2>
+                        <h2 v-text="subject.subject"></h2>
                         <p>Location: {{subject.location}}</p>
 
-                        <p>Price: {{subject.price}}</p>
-                        <!-- <p>{{subject.displayedInventory}} in stock</p> -->
+                        <p>Price: <em>USD($) {{subject.price}}.00</em></p>
 
                         <button v-if="canAddToCart(subject)" v-on:click="addToCart(subject)">
                             Add to Cart

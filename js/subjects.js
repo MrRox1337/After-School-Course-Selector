@@ -4,7 +4,7 @@ let subjects = [
         subject: "Business Mathematics",
         location: "Block 19",
         price: 125, // Mathematics
-        image: "img/subject1.gif",
+        image: "img/subject1.jpg",
         spaces: 5,
     },
     {
