@@ -1,167 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Vue.js Afterschool Course Selector</title>
-        <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
-        />
-        <link rel="stylesheet" href="css/style.css" />
-    </head>
-    <body>
-        <div id="App">
-            <header>
-                <h1 v-text="sitename"></h1>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js Afterschool Course Selector</title>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+		<link rel="stylesheet" href="css/style.css" />
+	</head>
+	<body>
+		<div id="App">
+			<header>
+				<h1 v-text="sitename"></h1>
 
-                <button v-on:click="showCheckout">
-                    {{ cartItemCount }}
-                    <span class="fas fa-cart-plus"></span> Checkout
-                </button>
-            </header>
-            <main>
-                <!-- Subject Catalog -->
-                <div v-if="showSubject">
-                    <!-- Show Subject Page -->
-                    <!-- Edit sortedSubjects to subjects if you want to swap between sorted and unsorted subjects list -->
-                    <div v-for="subject in sortedSubjects">
-                        <figure>
-                            <img v-bind:src="subject.image" />
-                        </figure>
-                        <h2 v-text="subject.subject"></h2>
-                        <p>Location: {{subject.location}}</p>
+				<button v-on:click="showCheckout">
+					{{ cartItemCount }}
+					<span class="fas fa-cart-plus"></span> Checkout
+				</button>
+			</header>
+			<main>
+				<!-- Subject Catalog -->
+				<div v-if="showSubject">
+					<!-- Show Subject Page -->
+					<!-- Edit sortedSubjects to subjects if you want to swap between sorted and unsorted subjects list -->
+					<div v-for="subject in sortedSubjects">
+						<figure>
+							<img v-bind:src="subject.image" />
+						</figure>
+						<h2 v-text="subject.subject"></h2>
+						<p>Location: {{subject.location}}</p>
 
-                        <p>Price: <em>USD($) {{subject.price}}.00</em></p>
+						<p>Price: <em>USD($) {{subject.price}}.00</em></p>
 
-                        <button v-if="canAddToCart(subject)" v-on:click="addToCart(subject)">
-                            Add to Cart
-                        </button>
-                        <button v-else disabled="disabled">Add to Cart</button>
-                        <span v-if="subject.spaces === cartCount(subject.id)">All out!</span>
-                        <span v-else-if="subject.spaces - cartCount(subject.id) < 3">
-                            Only {{subject.spaces - cartCount(subject.id)}} left!
-                        </span>
-                        <span v-else>Buy now!</span>
-                    </div>
-                </div>
+						<button v-if="canAddToCart(subject)" v-on:click="addToCart(subject)">Add to Cart</button>
+						<button v-else disabled="disabled">Add to Cart</button>
+						<span v-if="subject.spaces === cartCount(subject.id)">All out!</span>
+						<span v-else-if="subject.spaces - cartCount(subject.id) < 3">
+							Only {{subject.spaces - cartCount(subject.id)}} left!
+						</span>
+						<span v-else>Buy now!</span>
+					</div>
+				</div>
 
-                <!-- Checkout Page -->
-                <div v-else>
-                    <h2>Order Information</h2>
-                    <!-- Order Summary -->
-                    <div>
-                        <div v-for="item in cart">
-                            <div>
-                                <figure>
-                                    <img v-bind:src="item.image" />
-                                </figure>
-                                <h2 v-text="item.subject"></h2>
-                                <p v-html="item.location"></p>
+				<!-- Checkout Page -->
 
-                                <p>Price: {{item.price}}</p>
-                            </div>
-                        </div>
-                    </div>
+				<!-- Checkout Page -->
+				<div v-else class="checkout-page">
+					<h2>Order Information</h2>
 
-                    <p>
-                        <strong>First Name: </strong>
-                        <input v-model.trim="order.firstName" />
-                    </p>
-                    <p>
-                        <strong>Last Name: </strong>
-                        <input v-model.trim="order.lastName" />
-                    </p>
-                    <p>
-                        <strong>Phone/Postal Code: </strong> <input v-model.number="order.phone" />
-                    </p>
-                    <!-- Recipient Information -->
-                    <p>First Name: {{order.firstName}}</p>
-                    <p>Last Name: {{order.lastName}}</p>
-                    <p>Postal/Phone Code: {{order.phone}}</p>
+					<!-- Order Summary in Tabular Format -->
+					<table>
+						<thead>
+							<tr>
+								<th>Item #</th>
+								<th>Item Icon</th>
+								<th>Item Name</th>
+								<th>Quantity</th>
+								<th>Price</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="(item, index) in cart" :key="index">
+								<td>{{ index + 1 }}</td>
+								<td>
+									<img :src="item.image" alt="item icon" class="item-icon" />
+								</td>
+								<td>{{ item.subject }}</td>
+								<td>{{ cartCount(item.id) }}</td>
+								<td>USD {{ item.price * cartCount(item.id) }}</td>
+							</tr>
+						</tbody>
+					</table>
 
-                    <button v-on:click="submitForm">Place Order</button>
-                </div>
-            </main>
-        </div>
+					<!-- Total Price -->
+					<div class="total-price">
+						<strong>Total Price: USD {{ totalPrice }}</strong>
+					</div>
 
-        <script src="js/subjects.js"></script>
-        <script type="text/javascript">
-            let webstore = new Vue({
-                el: "#App",
-                data: {
-                    sitename: "Afterschool Course Registration Tool",
-                    showSubject: true,
-                    subject: {
-                        id: 1001,
-                        subject: "Cat Food, 25lb bag",
-                        location:
-                            "A 25 pound bag of <em>irresistible</em>," +
-                            "organic goodness for your cat.",
-                        price: 2000,
-                        image: "img/subject1.gif",
-                        spaces: 5,
-                        rating: 3,
-                    },
-                    subjects: subjects,
-                    order: {
-                        firstName: "",
-                        lastName: "",
-                        phone: "",
-                    },
-                    states: {
-                        AL: "Alabama",
-                        AZ: "Arizona",
-                        CA: "California",
-                        NV: "Nevada",
-                    },
-                    cart: [],
-                },
-                methods: {
-                    addToCart(subject) {
-                        // Add the full subject object to the cart
-                        this.cart.push(subject);
-                    },
-                    showCheckout: function () {
-                        this.showSubject = this.showSubject ? false : true;
-                    },
-                    submitForm: function () {
-                        alert("Order submitted!");
-                    },
-                    cartCount(id) {
-                        // Count how many times a subject with this id is in the cart
-                        let count = 0;
-                        for (let i = 0; i < this.cart.length; i++) {
-                            if (this.cart[i].id === id) {
-                                count++;
-                            }
-                        }
-                        return count;
-                    },
-                    canAddToCart(subject) {
-                        return subject.spaces > this.cartCount(subject.id);
-                    },
-                },
-                computed: {
-                    cartItemCount: function () {
-                        return this.cart.length || "";
-                    },
-                    itemsLeft: function () {
-                        return this.subject.spaces - this.cartItemCount;
-                    },
-                    sortedSubjects() {
-                        // the comparison function that defines the order
-                        function compare(a, b) {
-                            if (a.price > b.price) return 1;
-                            if (a.price < b.price) return -1;
-                            return 0; // if a.price === b.price
-                        }
-                        // sort the 'subjects' array and return it
-                        return this.subjects.sort(compare);
-                    },
-                },
-            });
-        </script>
-    </body>
+					<!-- Customer Information Form -->
+					<p>
+						<strong>First Name: </strong>
+						<input v-model.trim="order.firstName" />
+					</p>
+					<p>
+						<strong>Last Name: </strong>
+						<input v-model.trim="order.lastName" />
+					</p>
+					<p>
+						<strong>Phone/Postal Code: </strong>
+						<input v-model.number="order.phone" />
+					</p>
+
+					<button v-if="validateOrder()" v-on:click="submitForm" class="place-order">Place Order</button>
+					<button v-else disabled="disabled">Place Order</button>
+				</div>
+			</main>
+		</div>
+
+		<script src="js/subjects.js"></script>
+		<script type="text/javascript">
+			let webstore = new Vue({
+				el: "#App",
+				data: {
+					sitename: "Afterschool Course Registration Tool",
+					showSubject: true,
+					subject: {
+						id: 1001,
+						subject: "Cat Food, 25lb bag",
+						location: "A 25 pound bag of <em>irresistible</em>," + "organic goodness for your cat.",
+						price: 2000,
+						image: "img/subject1.gif",
+						spaces: 5,
+						rating: 3,
+					},
+					subjects: subjects,
+					order: {
+						firstName: "",
+						lastName: "",
+						phone: "",
+					},
+					states: {
+						AL: "Alabama",
+						AZ: "Arizona",
+						CA: "California",
+						NV: "Nevada",
+					},
+					cart: [],
+				},
+				methods: {
+					addToCart(subject) {
+						this.cart.push(subject);
+					},
+					showCheckout: function () {
+						this.showSubject = this.showSubject ? false : true;
+					},
+					submitForm: function () {
+						alert("Order submitted!");
+					},
+					cartCount(id) {
+						let count = 0;
+						for (let i = 0; i < this.cart.length; i++) {
+							if (this.cart[i].id === id) {
+								count++;
+							}
+						}
+						return count;
+					},
+					canAddToCart(subject) {
+						return subject.spaces > this.cartCount(subject.id);
+					},
+					validateOrder() {
+						return this.order.firstName === null && this.order.lastName === null && this.order.phone;
+					},
+				},
+				computed: {
+					cartItemCount: function () {
+						return this.cart.length || "";
+					},
+					itemsLeft: function () {
+						return this.subject.spaces - this.cartItemCount;
+					},
+					sortedSubjects() {
+						function compare(a, b) {
+							if (a.price > b.price) return 1;
+							if (a.price < b.price) return -1;
+							return 0; // if a.price === b.price
+						}
+						return this.subjects.sort(compare);
+					},
+				},
+			});
+		</script>
+	</body>
 </html>

@@ -1,0 +1,150 @@
+/* General styles */
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f3f3f3;
+	margin: 0;
+	padding: 0;
+}
+
+#App {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 20px 0;
+	border-bottom: 1px solid #ddd;
+}
+
+header h1 {
+	font-size: 1.8em;
+	color: #111;
+	font-weight: bold;
+}
+
+button {
+	background-color: #ffd814;
+	color: #111;
+	border: 1px solid #f0c14b;
+	padding: 8px 20px;
+	font-size: 1em;
+	cursor: pointer;
+	border-radius: 5px;
+}
+
+button:hover {
+	background-color: #f7ca00;
+}
+
+button:disabled {
+	background-color: #ddd;
+	cursor: not-allowed;
+}
+
+/* Subject cards */
+main > div {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+	padding: 20px 0;
+}
+
+main figure {
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+
+main img {
+	max-width: 150px;
+	border-radius: 5px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+main h2 {
+	font-size: 1.2em;
+	color: #007185;
+}
+
+main p {
+	font-size: 0.9em;
+	color: #555;
+}
+
+main button {
+	margin-top: 10px;
+}
+
+span {
+	color: red;
+	font-weight: bold;
+}
+
+/* Checkout section */
+.checkout-page h2 {
+	font-size: 1.6em;
+	color: #111;
+	margin-bottom: 10px;
+}
+
+.checkout-page div {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.checkout-page figure {
+	margin-right: 10px;
+}
+
+.checkout-page img {
+	max-width: 100px;
+	border-radius: 5px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.checkout-page p {
+	font-size: 1em;
+	color: #333;
+}
+
+/* Form styles */
+input {
+	padding: 8px;
+	width: 100%;
+	margin: 10px 0;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
+
+button.place-order {
+	background-color: #ff9900;
+	color: white;
+	border: none;
+	font-size: 1.1em;
+	padding: 10px;
+	cursor: pointer;
+	width: 100%;
+}
+
+button.place-order:hover {
+	background-color: #e68a00;
+}
+
+/* Animations for fade in/out */
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.5s ease-in-out;
+}
+
+.fade-enter,
+.fade-leave-to {
+	opacity: 0;
+}
