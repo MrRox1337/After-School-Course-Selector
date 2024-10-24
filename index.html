@@ -46,21 +46,116 @@
 
 				<!-- Checkout Page -->
 				<div v-else class="checkout-page">
-					<h2>Order Information</h2>
+					<div class="master-container">
+						<div class="card cart">
+							<label class="title">Your cart</label>
+							<div class="products">
+								<div v-for="item in uniqueCartItems" :key="item.id">
+									<img :src="item.image" alt="item icon" class="item-icon" width="60" height="60" />
+									<div class="product">
+										<div>
+											<span>{{item.subject}}</span>
+											<p>{{item.location}}</p>
+										</div>
+										<div class="quantity">
+											<button @:on-click="removeOne(item.id)">
+												<svg
+													fill="none"
+													viewBox="0 0 24 24"
+													height="14"
+													width="14"
+													xmlns="http://www.w3.org/2000/svg"
+												>
+													<path
+														stroke-linejoin="round"
+														stroke-linecap="round"
+														stroke-width="2.5"
+														stroke="#47484b"
+														d="M20 12L4 12"
+													></path>
+												</svg>
+											</button>
+											<label>{{cartCount(item.id)}}</label>
+											<button v-if="canAddToCart(subject)" v-on:click="addToCart(subject)">
+												<svg
+													fill="none"
+													viewBox="0 0 24 24"
+													height="14"
+													width="14"
+													xmlns="http://www.w3.org/2000/svg"
+												>
+													<path
+														stroke-linejoin="round"
+														stroke-linecap="round"
+														stroke-width="2.5"
+														stroke="#47484b"
+														d="M12 4V20M20 12H4"
+													></path>
+												</svg>
+											</button>
+											<button v-else disabled="disabled">
+												<svg
+													fill="none"
+													viewBox="0 0 24 24"
+													height="14"
+													width="14"
+													xmlns="http://www.w3.org/2000/svg"
+												>
+													<path
+														stroke-linejoin="round"
+														stroke-linecap="round"
+														stroke-width="2.5"
+														stroke="#47484b"
+														d="M12 4V20M20 12H4"
+													></path>
+												</svg>
+											</button>
+										</div>
+										<label class="price small">${{item.price}}</label>
+									</div>
+								</div>
+							</div>
+						</div>
 
-					<!-- Order Summary in Tabular Format -->
+						<div class="card coupons">
+							<label class="title">Apply coupons</label>
+							<form class="form">
+								<input type="text" placeholder="Apply your coupons here" class="input_field" />
+								<button>Apply</button>
+							</form>
+						</div>
+
+						<div class="card checkout">
+							<label class="title">Checkout</label>
+							<div class="details">
+								<span>Your cart subtotal:</span>
+								<span>47.99$</span>
+								<span>Discount through applied coupons:</span>
+								<span>3.99$</span>
+								<span>Shipping fees:</span>
+								<span>4.99$</span>
+							</div>
+							<div class="checkout--footer">
+								<label class="price"><sup>$</sup>57.99</label>
+								<button class="checkout-btn">Checkout</button>
+							</div>
+						</div>
+					</div>
+					<!-- <h2>Order Information</h2>
+
+					
 					<table>
 						<thead>
 							<tr>
 								<th>Item #</th>
-								<th>Item Icon</th>
-								<th>Item Name</th>
+								<th>Item Preview</th>
+								<th>Description</th>
 								<th>Quantity</th>
-								<th>Price</th>
+								<th>Price (USD)</th>
 							</tr>
 						</thead>
 						<tbody>
-							<!-- Ensure each unique item appears only once -->
+							
 							<tr v-for="(item, index) in uniqueCartItems" :key="item.id">
 								<td>{{ index + 1 }}</td>
 								<td>
@@ -68,31 +163,33 @@
 								</td>
 								<td>{{ item.subject }}</td>
 								<td>{{ cartCount(item.id) }}</td>
-								<td>USD {{ item.price * cartCount(item.id) }}</td>
+								<td>${{ item.price * cartCount(item.id) }}</td>
+							</tr>
+							
+							<tr>
+								<td colspan="4" class="total-label">Total Price:</td>
+								<td class="total-value">${{ totalPrice }}</td>
 							</tr>
 						</tbody>
 					</table>
 
-					<!-- Total Price -->
-					<div class="total-price">
-						<strong>Total Price: USD {{ totalPrice }}</strong>
+					
+					<div class="customer-info">
+						<p>
+							<strong>First Name: </strong>
+							<input v-model.trim="order.firstName" />
+						</p>
+						<p>
+							<strong>Last Name: </strong>
+							<input v-model.trim="order.lastName" />
+						</p>
+						<p>
+							<strong>Phone/Postal Code: </strong>
+							<input v-model.number="order.phone" />
+						</p>
 					</div>
 
-					<!-- Customer Information Form -->
-					<p>
-						<strong>First Name: </strong>
-						<input v-model.trim="order.firstName" />
-					</p>
-					<p>
-						<strong>Last Name: </strong>
-						<input v-model.trim="order.lastName" />
-					</p>
-					<p>
-						<strong>Phone/Postal Code: </strong>
-						<input v-model.number="order.phone" />
-					</p>
-
-					<button v-on:click="submitForm" class="place-order">Place Order</button>
+					<button v-on:click="submitForm" class="place-order">Place Order</button> -->
 				</div>
 			</main>
 		</div>
