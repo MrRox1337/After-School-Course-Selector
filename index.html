@@ -76,7 +76,7 @@
 												</svg>
 											</button>
 											<label>{{cartCount(item.id)}}</label>
-											<button v-if="canAddToCart(subject)" v-on:click="addToCart(subject)">
+											<button v-if="canAddToCart(item)" v-on:click="addToCart(item)">
 												<svg
 													fill="none"
 													viewBox="0 0 24 24"
@@ -118,25 +118,27 @@
 						</div>
 
 						<div class="card coupons">
-							<label class="title">Apply coupons</label>
+							<label class="title">Enter Customer Details</label>
 							<form class="form">
-								<input type="text" placeholder="Apply your coupons here" class="input_field" />
-								<button>Apply</button>
+								<input
+									v-model.trim="order.fullName"
+									placeholder="Enter full name"
+									class="input_field"
+								/>
+								<input v-model.trim="order.phone" placeholder="971XXXXXXXXX" class="input_field" />
 							</form>
 						</div>
 
 						<div class="card checkout">
-							<label class="title">Checkout</label>
+							<label class="title">Checkout Preview</label>
 							<div class="details">
-								<span>Your cart subtotal:</span>
-								<span>47.99$</span>
-								<span>Discount through applied coupons:</span>
-								<span>3.99$</span>
-								<span>Shipping fees:</span>
-								<span>4.99$</span>
+								<span>Your Name:</span>
+								<span>{{order.fullName}}</span>
+								<span>Your Phone Number:</span>
+								<span>{{order.phone}}</span>
 							</div>
 							<div class="checkout--footer">
-								<label class="price"><sup>$</sup>57.99</label>
+								<label class="price"><sup>$</sup>{{totalPrice}}</label>
 								<button class="checkout-btn">Checkout</button>
 							</div>
 						</div>
@@ -212,15 +214,8 @@
 					},
 					subjects: subjects,
 					order: {
-						firstName: "",
-						lastName: "",
+						fullName: "",
 						phone: "",
-					},
-					states: {
-						AL: "Alabama",
-						AZ: "Arizona",
-						CA: "California",
-						NV: "Nevada",
 					},
 					cart: [],
 				},

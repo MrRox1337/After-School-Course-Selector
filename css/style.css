@@ -196,7 +196,7 @@ span {
 
 .coupons form {
 	display: grid;
-	grid-template-columns: 1fr 80px;
+	grid-template-columns: 45% 45%;
 	gap: 10px;
 	padding: 10px;
 }
@@ -210,6 +210,8 @@ span {
 	border: 1px solid #e5e5e5;
 	filter: drop-shadow(0px 1px 0px #efefef) drop-shadow(0px 1px 0.5px rgba(239, 239, 239, 0.5));
 	transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
+	margin-left: 0;
+	float: left;
 }
 
 .input_field:focus {
