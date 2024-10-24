@@ -60,7 +60,8 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr v-for="(item, index) in cart" :key="index">
+							<!-- Ensure each unique item appears only once -->
+							<tr v-for="(item, index) in uniqueCartItems" :key="item.id">
 								<td>{{ index + 1 }}</td>
 								<td>
 									<img :src="item.image" alt="item icon" class="item-icon" />
@@ -91,8 +92,7 @@
 						<input v-model.number="order.phone" />
 					</p>
 
-					<button v-if="validateOrder()" v-on:click="submitForm" class="place-order">Place Order</button>
-					<button v-else disabled="disabled">Place Order</button>
+					<button v-on:click="submitForm" class="place-order">Place Order</button>
 				</div>
 			</main>
 		</div>
@@ -127,16 +127,51 @@
 					},
 					cart: [],
 				},
+				computed: {
+					// Cart item count
+					cartItemCount: function () {
+						return this.cart.length || "";
+					},
+					// Total price based on unique items and their quantities
+					totalPrice: function () {
+						return this.cart.reduce((sum, item) => {
+							return sum + item.price * this.cartCount(item.id);
+						}, 0);
+					},
+					// Ensure only unique items are shown in the table
+					uniqueCartItems: function () {
+						let uniqueItems = [];
+						this.cart.forEach((item) => {
+							if (!uniqueItems.some((uniqueItem) => uniqueItem.id === item.id)) {
+								uniqueItems.push(item);
+							}
+						});
+						return uniqueItems;
+					},
+					// Sorting subjects by price (existing feature)
+					sortedSubjects() {
+						function compare(a, b) {
+							if (a.price > b.price) return 1;
+							if (a.price < b.price) return -1;
+							return 0;
+						}
+						return this.subjects.sort(compare);
+					},
+				},
 				methods: {
+					// Add subject to cart
 					addToCart(subject) {
 						this.cart.push(subject);
 					},
+					// Toggle between subjects and checkout pages
 					showCheckout: function () {
 						this.showSubject = this.showSubject ? false : true;
 					},
+					// Submit order form
 					submitForm: function () {
 						alert("Order submitted!");
 					},
+					// Count number of a specific item in the cart
 					cartCount(id) {
 						let count = 0;
 						for (let i = 0; i < this.cart.length; i++) {
@@ -146,27 +181,9 @@
 						}
 						return count;
 					},
+					// Check if an item can be added to cart
 					canAddToCart(subject) {
 						return subject.spaces > this.cartCount(subject.id);
-					},
-					validateOrder() {
-						return this.order.firstName === null && this.order.lastName === null && this.order.phone;
-					},
-				},
-				computed: {
-					cartItemCount: function () {
-						return this.cart.length || "";
-					},
-					itemsLeft: function () {
-						return this.subject.spaces - this.cartItemCount;
-					},
-					sortedSubjects() {
-						function compare(a, b) {
-							if (a.price > b.price) return 1;
-							if (a.price < b.price) return -1;
-							return 0; // if a.price === b.price
-						}
-						return this.subjects.sort(compare);
 					},
 				},
 			});
