@@ -11,12 +11,13 @@
 	<body>
 		<div id="App">
 			<header>
-				<h1 v-text="sitename"></h1>
+				<h1 id="sitename" data-value="REMEDIALSELECT">REMEDIALSELECT</h1>
 
-				<button v-on:click="showCheckout">
+				<button v-if="showSubject" v-on:click="showCheckout">
 					{{ cartItemCount }}
-					<span class="fas fa-cart-plus"></span> Checkout
+					<span class="fas fa-cart-plus"></span> View Cart
 				</button>
+				<button v-else v-on:click="showCheckout"><span class="fas fa-arrow-left"></span> Go Back</button>
 			</header>
 			<main>
 				<!-- Subject Catalog -->
@@ -59,56 +60,14 @@
 										</div>
 										<div class="quantity">
 											<button v-on:click="removeOne(item)">
-												<svg
-													fill="none"
-													viewBox="0 0 24 24"
-													height="14"
-													width="14"
-													xmlns="http://www.w3.org/2000/svg"
-												>
-													<path
-														stroke-linejoin="round"
-														stroke-linecap="round"
-														stroke-width="2.5"
-														stroke="#47484b"
-														d="M20 12L4 12"
-													></path>
-												</svg>
+												<span class="fas fa-minus"></span>
 											</button>
 											<label>{{cartCount(item.id)}}</label>
 											<button v-if="canAddToCart(item)" v-on:click="addToCart(item)">
-												<svg
-													fill="none"
-													viewBox="0 0 24 24"
-													height="14"
-													width="14"
-													xmlns="http://www.w3.org/2000/svg"
-												>
-													<path
-														stroke-linejoin="round"
-														stroke-linecap="round"
-														stroke-width="2.5"
-														stroke="#47484b"
-														d="M12 4V20M20 12H4"
-													></path>
-												</svg>
+												<span class="fas fa-plus"></span>
 											</button>
 											<button v-else disabled="disabled">
-												<svg
-													fill="none"
-													viewBox="0 0 24 24"
-													height="14"
-													width="14"
-													xmlns="http://www.w3.org/2000/svg"
-												>
-													<path
-														stroke-linejoin="round"
-														stroke-linecap="round"
-														stroke-width="2.5"
-														stroke="#47484b"
-														d="M12 4V20M20 12H4"
-													></path>
-												</svg>
+												<span class="fas fa-plus"></span>
 											</button>
 										</div>
 										<label class="price small">${{item.price}}</label>
@@ -152,7 +111,6 @@
 			let webstore = new Vue({
 				el: "#App",
 				data: {
-					sitename: "Afterschool Course Registration Tool",
 					showSubject: true,
 					subject: {
 						id: 1001,
@@ -240,5 +198,6 @@
 				},
 			});
 		</script>
+		<script src="js/animation.js"></script>
 	</body>
 </html>

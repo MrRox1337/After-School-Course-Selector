@@ -23,10 +23,11 @@ header {
 	border-bottom: 1px solid #ddd;
 }
 
-header h1 {
-	font-size: 1.8em;
+h1 {
+	font-size: 5rem;
 	color: #111;
 	font-weight: bold;
+	font-family: "Space Mono", monospace;
 }
 
 button {
@@ -87,7 +88,21 @@ span {
 	font-weight: bold;
 }
 
-/* From Uiverse.io by zanina-yassine */
+main > div > div {
+	border: 1px solid #ddd; /* Adds a light border */
+	padding: 20px;
+	border-radius: 5px; /* Optional: round the corners */
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+	background-color: #fff; /* Ensures the background color is white */
+	transition: transform 0.2s ease-in-out; /* Adds a hover effect */
+}
+
+main > div > div:hover {
+	transform: scale(1.02); /* Slightly enlarges the card when hovered */
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Increases the shadow on hover */
+}
+
+/* Checkout page */
 .master-container {
 	display: grid;
 	grid-template-columns: auto;
