@@ -112,12 +112,28 @@
 				el: "#App",
 				data: {
 					showSubject: true,
-					subjects: subjects,
+					subjects: [],
 					order: {
 						fullName: "",
 						phone: "",
 					},
 					cart: [],
+				},
+				created() {
+					// Fetch subjects from the API
+					fetch("https://after-school-webservice.onrender.com/collection/subjects")
+						.then((response) => {
+							if (!response.ok) {
+								throw new Error("Failed to fetch subjects");
+							}
+							return response.json();
+						})
+						.then((data) => {
+							this.subjects = data; // Populate subjects with data from the API
+						})
+						.catch((error) => {
+							console.error("Error loading subjects:", error);
+						});
 				},
 				computed: {
 					// Cart item count
@@ -141,14 +157,9 @@
 						});
 						return uniqueItems;
 					},
-					// Sorting subjects by price (existing feature)
+					// Sorting subjects by price
 					sortedSubjects: function () {
-						function compare(a, b) {
-							if (a.price > b.price) return 1;
-							if (a.price < b.price) return -1;
-							return 0;
-						}
-						return this.subjects.sort(compare);
+						return [...this.subjects].sort((a, b) => a.price - b.price);
 					},
 				},
 				methods: {
