@@ -42,9 +42,9 @@
                             Add to Cart
                         </button>
                         <button v-else disabled="disabled">Add to Cart</button>
-                        <span v-if="subject.spaces === cartCount(subject.id)">All out!</span>
-                        <span v-else-if="subject.spaces - cartCount(subject.id) < 3">
-                            Only {{subject.spaces - cartCount(subject.id)}} left!
+                        <span v-if="subject.spaces === cartCount(subject._id)">All out!</span>
+                        <span v-else-if="subject.spaces - cartCount(subject._id) < 3">
+                            Only {{subject.spaces - cartCount(subject._id)}} left!
                         </span>
                         <span v-else>Buy now!</span>
                     </div>
@@ -58,7 +58,7 @@
                         <div class="card cart">
                             <label class="title">Your cart</label>
                             <div class="products">
-                                <div v-for="item in uniqueCartItems" :key="item.id">
+                                <div v-for="item in uniqueCartItems" :key="item._id">
                                     <img
                                         :src="item.image"
                                         alt="item icon"
@@ -75,7 +75,7 @@
                                             <button v-on:click="removeOne(item)">
                                                 <span class="fas fa-minus"></span>
                                             </button>
-                                            <label>{{cartCount(item.id)}}</label>
+                                            <label>{{cartCount(item._id)}}</label>
                                             <button
                                                 v-if="canAddToCart(item)"
                                                 v-on:click="addToCart(item)"
@@ -154,14 +154,14 @@
                     totalPrice: function () {
                         let uniqueItems = this.uniqueCartItems;
                         return uniqueItems.reduce((sum, item) => {
-                            return sum + item.price * this.cartCount(item.id); // Use cartCount to get correct quantity for each unique item
+                            return sum + item.price * this.cartCount(item._id); // Use cartCount to get correct quantity for each unique item
                         }, 0);
                     },
                     // Ensure only unique items are shown in the table
                     uniqueCartItems: function () {
                         let uniqueItems = [];
                         this.cart.forEach((item) => {
-                            if (!uniqueItems.some((uniqueItem) => uniqueItem.id === item.id)) {
+                            if (!uniqueItems.some((uniqueItem) => uniqueItem._id === item._id)) {
                                 uniqueItems.push(item);
                             }
                         });
@@ -181,7 +181,7 @@
                     removeOne(item) {
                         // Find the last instance of the item in the cart and remove it
                         const itemIndex = this.cart.findIndex(
-                            (cartItem) => cartItem.id === item.id
+                            (cartItem) => cartItem._id === item._id
                         );
                         if (itemIndex !== -1) {
                             this.cart.splice(itemIndex, 1); // Remove one instance of the item
@@ -193,13 +193,34 @@
                     },
                     // Submit order form
                     submitForm: function () {
-                        alert("Order submitted!");
+                        const newOrder = {
+                            fullName: this.order.fullName,
+                            phone: this.order.phone,
+                            order: this.cart,
+                        };
+
+                        // set the url to your server and route
+                        fetch("http://localhost:3000/collection/orders", {
+                            method: "POST", // set the HTTP method as 'POST'
+                            headers: {
+                                "Content-Type": "application/json", // set the data type as JSON
+                            },
+                            body: JSON.stringify(newOrder), // need to stringify the JSON object
+                        })
+                            .then((response) => response.json())
+                            .then((responseJSON) => {
+                                document.getElementById("response").innerText =
+                                    JSON.stringify(responseJSON);
+                            })
+                            .catch((error) => {
+                                document.getElementById("error").innerText = error;
+                            });
                     },
                     // Count number of a specific item in the cart
                     cartCount(id) {
                         let count = 0;
                         for (let i = 0; i < this.cart.length; i++) {
-                            if (this.cart[i].id === id) {
+                            if (this.cart[i]._id === id) {
                                 count++;
                             }
                         }
@@ -207,7 +228,7 @@
                     },
                     // Check if an item can be added to cart
                     canAddToCart(item) {
-                        return item.spaces > this.cartCount(item.id);
+                        return item.spaces > this.cartCount(item._id);
                     },
                     fetchSubjects() {
                         fetch("https://after-school-webservice.onrender.com/collection/subjects", {
