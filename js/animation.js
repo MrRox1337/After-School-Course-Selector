@@ -27,7 +27,7 @@ if (siteName) {
                 clearInterval(interval);
             }
 
-            iteration += 1 / 1.5;
+            iteration += 2 / 3;
         }, 30);
     };
 } else {
