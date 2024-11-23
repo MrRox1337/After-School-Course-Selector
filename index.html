@@ -5,10 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Vue.js Afterschool Course Selector</title>
         <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
-        />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
         <link rel="stylesheet" href="css/style.css" />
     </head>
     <body>
@@ -16,77 +13,55 @@
             <header>
                 <h1 id="sitename" data-value="REMEDIALSELECT">REMEDIALSELECT</h1>
 
-                <button v-if="showSubject" v-on:click="showCheckout">
+                <button v-if="showSubject" v-on:click="toggleCheckout">
                     {{ cartItemCount }}
                     <span class="fas fa-cart-plus"></span> View Cart
                 </button>
-                <button v-else v-on:click="showCheckout">
-                    <span class="fas fa-arrow-left"></span> Go Back
-                </button>
+                <button v-else v-on:click="toggleCheckout"><span class="fas fa-arrow-left"></span> Go Back</button>
             </header>
             <main>
                 <!-- Subject Catalog -->
                 <div v-if="showSubject">
-                    <!-- Show Subject Page -->
-                    <!-- Edit sortedSubjects to subjects if you want to swap between sorted and unsorted subjects list -->
-                    <div v-for="subject in sortedSubjects">
+                    <div v-for="subject in sortedSubjects" :key="subject._id" class="subject-card">
                         <figure>
-                            <img v-bind:src="subject.image" />
+                            <img :src="subject.image" alt="Subject Image" />
                         </figure>
-                        <h2 v-text="subject.subject"></h2>
-                        <p>Location: {{subject.location}}</p>
+                        <h2>{{ subject.subject }}</h2>
+                        <p>Location: {{ subject.location }}</p>
+                        <p>Price: <em>USD($) {{ subject.price }}.00</em></p>
 
-                        <p>Price: <em>USD($) {{subject.price}}.00</em></p>
-
-                        <button v-if="canAddToCart(subject)" v-on:click="addToCart(subject)">
-                            Add to Cart
-                        </button>
-                        <button v-else disabled="disabled">Add to Cart</button>
-                        <span v-if="subject.spaces === cartCount(subject._id)">All out!</span>
-                        <span v-else-if="subject.spaces - cartCount(subject._id) < 3">
-                            Only {{subject.spaces - cartCount(subject._id)}} left!
-                        </span>
-                        <span v-else>Buy now!</span>
+                        <button v-if="canAddToCart(subject)" v-on:click="addToCart(subject)">Add to Cart</button>
+                        <button v-else disabled>All Out!</button>
+                        <span v-if="subject.spaces - cartCount(subject._id) < 3"> Only {{ subject.spaces - cartCount(subject._id) }} left! </span>
                     </div>
                 </div>
-
-                <!-- Checkout Page -->
 
                 <!-- Checkout Page -->
                 <div v-else class="checkout-page">
                     <div class="master-container">
                         <div class="card cart">
-                            <label class="title">Your cart</label>
+                            <label class="title">Your Cart</label>
                             <div class="products">
                                 <div v-for="item in uniqueCartItems" :key="item._id">
-                                    <img
-                                        :src="item.image"
-                                        alt="item icon"
-                                        class="item-icon"
-                                        width="60"
-                                        height="60"
-                                    />
+                                    <img :src="item.image" alt="item icon" class="item-icon" width="60" height="60" />
                                     <div class="product">
                                         <div>
-                                            <span>{{item.subject}}</span>
-                                            <p>{{item.location}}</p>
+                                            <span>{{ item.subject }}</span>
+                                            <p>{{ item.location }}</p>
                                         </div>
                                         <div class="quantity">
                                             <button v-on:click="removeOne(item)">
                                                 <span class="fas fa-minus"></span>
                                             </button>
-                                            <label>{{cartCount(item._id)}}</label>
-                                            <button
-                                                v-if="canAddToCart(item)"
-                                                v-on:click="addToCart(item)"
-                                            >
+                                            <label>{{ cartCount(item._id) }}</label>
+                                            <button v-if="canAddToCart(item)" v-on:click="addToCart(item)">
                                                 <span class="fas fa-plus"></span>
                                             </button>
-                                            <button v-else disabled="disabled">
+                                            <button v-else disabled>
                                                 <span class="fas fa-plus"></span>
                                             </button>
                                         </div>
-                                        <label class="price small">${{item.price}}</label>
+                                        <label class="price small">${{ item.price }}</label>
                                     </div>
                                 </div>
                             </div>
@@ -95,16 +70,8 @@
                         <div class="card coupons">
                             <label class="title">Enter Customer Details</label>
                             <form class="form">
-                                <input
-                                    v-model.trim="order.fullName"
-                                    placeholder="Enter full name"
-                                    class="input_field"
-                                />
-                                <input
-                                    v-model.trim="order.phone"
-                                    placeholder="971XXXXXXXXX"
-                                    class="input_field"
-                                />
+                                <input v-model.trim="order.fullName" placeholder="Enter full name" class="input_field" />
+                                <input v-model.trim="order.phone" placeholder="971XXXXXXXXX" class="input_field" />
                             </form>
                         </div>
 
@@ -112,15 +79,13 @@
                             <label class="title">Checkout Preview</label>
                             <div class="details">
                                 <span>Your Name:</span>
-                                <span>{{order.fullName}}</span>
+                                <span>{{ order.fullName }}</span>
                                 <span>Your Phone Number:</span>
-                                <span>{{order.phone}}</span>
+                                <span>{{ order.phone }}</span>
                             </div>
                             <div class="checkout--footer">
-                                <label class="price"><sup>$</sup>{{totalPrice}}</label>
-                                <button v-on:click="submitForm" class="checkout-btn">
-                                    Checkout
-                                </button>
+                                <label class="price"><sup>$</sup>{{ totalPrice }}</label>
+                                <button v-on:click="submitForm" class="checkout-btn">Checkout</button>
                             </div>
                         </div>
                     </div>
@@ -128,8 +93,8 @@
             </main>
         </div>
 
-        <script src="js/subjects.js"></script>
-        <script type="text/javascript">
+        <script src="js/animation.js"></script>
+        <script>
             let webstore = new Vue({
                 el: "#App",
                 data: {
@@ -142,109 +107,75 @@
                     cart: [],
                 },
                 created() {
-                    // Fetch subjects from the API
                     this.fetchSubjects();
                 },
                 computed: {
-                    // Cart item count
-                    cartItemCount: function () {
+                    cartItemCount() {
                         return this.cart.length || "";
                     },
-                    // Total price based on unique items and their quantities
-                    totalPrice: function () {
-                        let uniqueItems = this.uniqueCartItems;
-                        return uniqueItems.reduce((sum, item) => {
-                            return sum + item.price * this.cartCount(item._id); // Use cartCount to get correct quantity for each unique item
+                    totalPrice() {
+                        return this.uniqueCartItems.reduce((sum, item) => {
+                            return sum + item.price * this.cartCount(item._id);
                         }, 0);
                     },
-                    // Ensure only unique items are shown in the table
-                    uniqueCartItems: function () {
-                        let uniqueItems = [];
-                        this.cart.forEach((item) => {
-                            if (!uniqueItems.some((uniqueItem) => uniqueItem._id === item._id)) {
-                                uniqueItems.push(item);
-                            }
-                        });
-                        return uniqueItems;
+                    uniqueCartItems() {
+                        return this.cart.filter((item, index, self) => self.findIndex((t) => t._id === item._id) === index);
                     },
-                    // Sorting subjects by price
-                    sortedSubjects: function () {
+                    sortedSubjects() {
                         return [...this.subjects].sort((a, b) => a.price - b.price);
                     },
                 },
                 methods: {
-                    // Add subject to cart
                     addToCart(item) {
                         this.cart.push(item);
                     },
-                    // Remove one subject from cart
                     removeOne(item) {
-                        // Find the last instance of the item in the cart and remove it
-                        const itemIndex = this.cart.findIndex(
-                            (cartItem) => cartItem._id === item._id
-                        );
-                        if (itemIndex !== -1) {
-                            this.cart.splice(itemIndex, 1); // Remove one instance of the item
-                        }
+                        const index = this.cart.findIndex((cartItem) => cartItem._id === item._id);
+                        if (index !== -1) this.cart.splice(index, 1);
                     },
-                    // Toggle between subjects and checkout pages
-                    showCheckout: function () {
-                        this.showSubject = this.showSubject ? false : true;
+                    toggleCheckout() {
+                        this.showSubject = !this.showSubject;
                     },
-                    // Submit order form
-                    submitForm: function () {
+                    submitForm() {
                         const newOrder = {
                             fullName: this.order.fullName,
                             phone: this.order.phone,
                             order: this.cart,
                         };
-
-                        // set the url to your server and route
                         fetch("http://localhost:3000/collection/orders", {
-                            method: "POST", // set the HTTP method as 'POST'
+                            method: "POST",
                             headers: {
-                                "Content-Type": "application/json", // set the data type as JSON
+                                "Content-Type": "application/json",
                             },
-                            body: JSON.stringify(newOrder), // need to stringify the JSON object
+                            body: JSON.stringify(newOrder),
                         })
                             .then((response) => response.json())
                             .then((responseJSON) => {
-                                document.getElementById("response").innerText =
-                                    JSON.stringify(responseJSON);
+                                alert("Order submitted successfully!");
                             })
                             .catch((error) => {
-                                document.getElementById("error").innerText = error;
+                                console.error("Error submitting order:", error);
                             });
                     },
-                    // Count number of a specific item in the cart
                     cartCount(id) {
-                        let count = 0;
-                        for (let i = 0; i < this.cart.length; i++) {
-                            if (this.cart[i]._id === id) {
-                                count++;
-                            }
-                        }
-                        return count;
+                        return this.cart.filter((item) => item._id === id).length;
                     },
-                    // Check if an item can be added to cart
                     canAddToCart(item) {
                         return item.spaces > this.cartCount(item._id);
                     },
                     fetchSubjects() {
                         fetch("https://after-school-webservice.onrender.com/collection/subjects", {
-                            method: "GET", // Fetch subjects using GET method
+                            method: "GET",
                             headers: {
                                 "Content-Type": "application/json",
                             },
                         })
-                            .then((response) => {
-                                if (!response.ok) {
-                                    throw new Error(`HTTP error! status: ${response.status}`);
-                                }
-                                return response.json();
-                            })
+                            .then((response) => response.json())
                             .then((data) => {
-                                this.subjects = data; // Populate the subjects attribute with the response data
+                                this.subjects = data.map((subject) => ({
+                                    ...subject,
+                                    _id: String(subject._id),
+                                }));
                             })
                             .catch((error) => {
                                 console.error("Error fetching subjects:", error);
@@ -253,6 +184,5 @@
                 },
             });
         </script>
-        <script src="js/animation.js"></script>
     </body>
 </html>
