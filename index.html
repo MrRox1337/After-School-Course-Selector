@@ -138,9 +138,8 @@
                     },
                     submitForm() {
                         const newOrder = {
-                            fullName: this.order.fullName,
-                            phone: this.order.phone,
-                            order: this.cart,
+                            order: this.order,
+                            cart: this.cart,
                         };
                         fetch("http://localhost:3000/collection/orders", {
                             method: "POST",
