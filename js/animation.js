@@ -2,8 +2,6 @@ const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 let interval = null;
 
-console.log(document.querySelector("h1").innerText);
-
 const siteName = document.getElementById("sitename");
 if (siteName) {
     console.log("Element selected:", siteName);
