@@ -1,235 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Vue.js Afterschool Course Selector</title>
-		<script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
-		<link rel="stylesheet" href="css/style.css" />
-	</head>
-	<body>
-		<div id="App">
-			<header>
-				<h1 id="sitename" data-value="REMEDIALSELECT">REMEDIALSELECT</h1>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Vue.js Afterschool Course Selector</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+        <link rel="stylesheet" href="css/style.css" />
+    </head>
+    <body>
+        <div id="App">
+            <header>
+                <h1 id="sitename" data-value="REMEDIALSELECT">REMEDIALSELECT</h1>
 
-				<button v-if="showSubject" v-on:click="toggleCheckout">
-					{{ cartItemCount }}
-					<span class="fas fa-shopping-cart"></span> View Cart
-				</button>
-				<button v-else v-on:click="toggleCheckout"><span class="fas fa-arrow-left"></span> Go Back</button>
-			</header>
-			<main>
-				<!-- Subject Catalog -->
-				<div v-if="showSubject">
-					<div v-for="subject in sortedSubjects" :key="subject._id" class="subject-card">
-						<figure>
-							<img :src="subject.image" alt="Subject Image" />
-						</figure>
-						<h2>{{ subject.subject }}</h2>
-						<p>Location: {{ subject.location }}</p>
-						<p>Price: <em>USD($) {{ subject.price }}.00</em></p>
-						<p>Spaces: {{ subject.spaces }}</p>
+                <button v-if="showSubject" v-on:click="toggleCheckout">
+                    {{ cartItemCount }}
+                    <span class="fas fa-shopping-cart"></span> View Cart
+                </button>
+                <button v-else v-on:click="toggleCheckout"><span class="fas fa-arrow-left"></span> Go Back</button>
+            </header>
+            <main>
+                <!-- Subject Catalog -->
+                <div v-if="showSubject">
+                    <div v-for="subject in sortedSubjects" :key="subject._id" class="subject-card">
+                        <figure>
+                            <img :src="subject.image" alt="Subject Image" />
+                        </figure>
+                        <h2>{{ subject.subject }}</h2>
+                        <p>Location: {{ subject.location }}</p>
+                        <p>Price: <em>USD($) {{ subject.price }}.00</em></p>
+                        <p>Spaces: {{ subject.spaces }}</p>
 
-						<button v-if="canAddToCart(subject)" v-on:click="addToCart(subject)">
-							<span class="fas fa-cart-plus"></span> Add to Cart
-						</button>
-						<button v-else disabled>All Out!</button>
-						<span v-if="subject.spaces - cartCount(subject._id) < 3">
-							Only {{ subject.spaces - cartCount(subject._id) }} left!
-						</span>
-					</div>
-				</div>
+                        <button v-if="canAddToCart(subject)" v-on:click="addToCart(subject)"><span class="fas fa-cart-plus"></span> Add to Cart</button>
+                        <button v-else disabled>All Out!</button>
+                        <span v-if="subject.spaces - cartCount(subject._id) < 3"> Only {{ subject.spaces - cartCount(subject._id) }} left! </span>
+                    </div>
+                </div>
 
-				<!-- Checkout Page -->
-				<div v-else class="checkout-page">
-					<div class="master-container">
-						<div class="card cart">
-							<label class="title">Your Cart</label>
-							<div class="products">
-								<div v-for="item in uniqueCartItems" :key="item._id">
-									<img :src="item.image" alt="item icon" class="item-icon" width="60" height="60" />
-									<div class="product">
-										<div>
-											<span>{{ item.subject }}</span>
-											<p>{{ item.location }}</p>
-										</div>
-										<div class="quantity">
-											<button v-on:click="removeOne(item)">
-												<span class="fas fa-minus"></span>
-											</button>
-											<label>{{ cartCount(item._id) }}</label>
-											<button v-if="canAddToCart(item)" v-on:click="addToCart(item)">
-												<span class="fas fa-plus"></span>
-											</button>
-											<button v-else disabled>
-												<span class="fas fa-plus"></span>
-											</button>
-										</div>
-										<label class="price small">${{ item.price }}</label>
-									</div>
-								</div>
-							</div>
-						</div>
+                <!-- Checkout Page -->
+                <div v-else class="checkout-page">
+                    <div class="master-container">
+                        <div class="card cart">
+                            <label class="title">Your Cart</label>
+                            <div class="products">
+                                <div v-for="item in uniqueCartItems" :key="item._id">
+                                    <img :src="item.image" alt="item icon" class="item-icon" width="60" height="60" />
+                                    <div class="product">
+                                        <div>
+                                            <span>{{ item.subject }}</span>
+                                            <p>{{ item.location }}</p>
+                                        </div>
+                                        <div class="quantity">
+                                            <button v-on:click="removeOne(item)">
+                                                <span class="fas fa-minus"></span>
+                                            </button>
+                                            <label>{{ cartCount(item._id) }}</label>
+                                            <button v-if="canAddToCart(item)" v-on:click="addToCart(item)">
+                                                <span class="fas fa-plus"></span>
+                                            </button>
+                                            <button v-else disabled>
+                                                <span class="fas fa-plus"></span>
+                                            </button>
+                                        </div>
+                                        <label class="price small">${{ item.price }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-						<div class="card coupons">
-							<label class="title">Enter Customer Details</label>
-							<form class="form">
-								<input
-									v-model.trim="order.fullName"
-									placeholder="Enter full name"
-									class="input_field"
-								/>
-								<input v-model.trim="order.phone" placeholder="971XXXXXXXXX" class="input_field" />
-							</form>
-						</div>
+                        <div class="card coupons">
+                            <label class="title">Enter Customer Details</label>
+                            <form class="form">
+                                <input v-model.trim="order.fullName" placeholder="Enter full name" class="input_field" />
+                                <input v-model.trim="order.phone" placeholder="971XXXXXXXXX" class="input_field" />
+                            </form>
+                        </div>
 
-						<div class="card checkout">
-							<label class="title">Checkout Preview</label>
-							<div class="details">
-								<span>Your Name:</span>
-								<span>{{ order.fullName }}</span>
-								<span>Your Phone Number:</span>
-								<span>{{ order.phone }}</span>
-							</div>
-							<div class="checkout--footer">
-								<label class="price"><sup>$</sup>{{ totalPrice }}</label>
-								<button v-on:click="submitForm" class="checkout-btn">Checkout</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</main>
-		</div>
+                        <div class="card checkout">
+                            <label class="title">Checkout Preview</label>
+                            <div class="details">
+                                <span>Your Name:</span>
+                                <span>{{ order.fullName }}</span>
+                                <span>Your Phone Number:</span>
+                                <span>{{ order.phone }}</span>
+                            </div>
+                            <div class="checkout--footer">
+                                <label class="price"><sup>$</sup>{{ totalPrice }}</label>
+                                <button v-on:click="submitForm" class="checkout-btn">Checkout</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
 
-		<script>
-			let webstore = new Vue({
-				el: "#App",
-				data: {
-					showSubject: true,
-					subjects: [],
-					order: {
-						fullName: "",
-						phone: "",
-					},
-					cart: [],
-				},
-				created() {
-					this.fetchSubjects();
-				},
-				computed: {
-					cartItemCount() {
-						return this.cart.length || "";
-					},
-					totalPrice() {
-						return this.uniqueCartItems.reduce((sum, item) => {
-							return sum + item.price * this.cartCount(item._id);
-						}, 0);
-					},
-					uniqueCartItems() {
-						return this.cart.filter(
-							(item, index, self) => self.findIndex((t) => t._id === item._id) === index
-						);
-					},
-					sortedSubjects() {
-						return [...this.subjects].sort((a, b) => a.price - b.price);
-					},
-				},
-				methods: {
-					addToCart(item) {
-						this.cart.push(item);
-					},
-					removeOne(item) {
-						const index = this.cart.findIndex((cartItem) => cartItem._id === item._id);
-						if (index !== -1) this.cart.splice(index, 1);
-					},
-					toggleCheckout() {
-						this.showSubject = !this.showSubject;
-					},
-					submitForm() {
-						// Create the new order object
-						const newOrder = {
-							order: this.order,
-							cart: this.cart,
-						};
+        <script>
+            let webstore = new Vue({
+                el: "#App",
+                data: {
+                    showSubject: true,
+                    subjects: [],
+                    order: {
+                        fullName: "",
+                        phone: "",
+                    },
+                    cart: [],
+                },
+                created() {
+                    this.fetchSubjects();
+                },
+                computed: {
+                    cartItemCount() {
+                        return this.cart.length || "";
+                    },
+                    totalPrice() {
+                        return this.uniqueCartItems.reduce((sum, item) => {
+                            return sum + item.price * this.cartCount(item._id);
+                        }, 0);
+                    },
+                    uniqueCartItems() {
+                        return this.cart.filter((item, index, self) => self.findIndex((t) => t._id === item._id) === index);
+                    },
+                    sortedSubjects() {
+                        return [...this.subjects].sort((a, b) => a.price - b.price);
+                    },
+                },
+                methods: {
+                    addToCart(item) {
+                        this.cart.push(item);
+                    },
+                    removeOne(item) {
+                        const index = this.cart.findIndex((cartItem) => cartItem._id === item._id);
+                        if (index !== -1) this.cart.splice(index, 1);
+                    },
+                    toggleCheckout() {
+                        this.showSubject = !this.showSubject;
+                    },
+                    submitForm() {
+                        // Create the new order object
+                        const newOrder = {
+                            order: this.order,
+                            cart: this.uniqueCartItems,
+                        };
 
-						// Submit the order
-						fetch("https://after-school-webservice.onrender.com/collection/orders", {
-							method: "POST",
-							headers: {
-								"Content-Type": "application/json",
-							},
-							body: JSON.stringify(newOrder),
-						})
-							.then((response) => response.json())
-							.then((responseJSON) => {
-								// Notify the user
-								alert("Order submitted successfully!");
+                        // Submit the order
+                        fetch("https://after-school-webservice.onrender.com/collection/orders", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(newOrder),
+                        })
+                            .then((response) => response.json())
+                            .then((responseJSON) => {
+                                // Notify the user
+                                alert("Order submitted successfully!");
 
-								// Update spaces for each unique item in the cart
-								this.updateSpaces();
-							})
-							.catch((error) => {
-								console.error("Error submitting order:", error);
-							});
-					},
-					updateSpaces() {
-						// Loop through unique cart items
-						this.uniqueCartItems.forEach((item) => {
-							// Calculate the remaining spaces
-							const spacesLeft = item.spaces - this.cartCount(item._id);
+                                // Update spaces for each unique item in the cart
+                                this.updateSpaces();
+                            })
+                            .catch((error) => {
+                                console.error("Error submitting order:", error);
+                            });
+                    },
+                    updateSpaces() {
+                        // Loop through unique cart items
+                        this.uniqueCartItems.forEach((item) => {
+                            // Calculate the remaining spaces
+                            const spacesLeft = item.spaces - this.cartCount(item._id);
 
-							// Prepare the payload for updating spaces
-							const updatedSubject = { spaces: spacesLeft };
+                            // Prepare the payload for updating spaces
+                            const updatedSubject = { spaces: spacesLeft };
 
-							// Send the PUT request to update the subject
-							fetch(`https://after-school-webservice.onrender.com/collection/subjects/${item._id}`, {
-								method: "PUT",
-								headers: {
-									"Content-Type": "application/json",
-								},
-								body: JSON.stringify(updatedSubject),
-							})
-								.then((response) => response.json())
-								.then((responseJSON) => {
-									if (responseJSON.msg === "success") {
-										console.log(`Updated spaces for subject: ${item._id}`);
-									} else {
-										console.error(`Failed to update spaces for subject: ${item._id}`);
-									}
-								})
-								.catch((error) => {
-									console.error("Error updating subject:", error);
-								});
-						});
-					},
-					cartCount(id) {
-						return this.cart.filter((item) => item._id === id).length;
-					},
-					canAddToCart(item) {
-						return item.spaces > this.cartCount(item._id);
-					},
-					fetchSubjects() {
-						fetch("https://after-school-webservice.onrender.com/collection/subjects", {
-							method: "GET",
-							headers: {
-								"Content-Type": "application/json",
-							},
-						})
-							.then((response) => response.json())
-							.then((data) => {
-								this.subjects = data.map((subject) => ({
-									...subject,
-									_id: String(subject._id),
-								}));
-							})
-							.catch((error) => {
-								console.error("Error fetching subjects:", error);
-							});
-					},
-				},
-			});
-		</script>
-		<script src="js/animation.js"></script>
-	</body>
+                            // Send the PUT request to update the subject
+                            fetch(`https://after-school-webservice.onrender.com/collection/subjects/${item._id}`, {
+                                method: "PUT",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify(updatedSubject),
+                            })
+                                .then((response) => response.json())
+                                .then((responseJSON) => {
+                                    if (responseJSON.msg === "success") {
+                                        console.log(`Updated spaces for subject: ${item._id}`);
+                                    } else {
+                                        console.error(`Failed to update spaces for subject: ${item._id}`);
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.error("Error updating subject:", error);
+                                });
+                        });
+                    },
+                    cartCount(id) {
+                        return this.cart.filter((item) => item._id === id).length;
+                    },
+                    canAddToCart(item) {
+                        return item.spaces > this.cartCount(item._id);
+                    },
+                    fetchSubjects() {
+                        fetch("https://after-school-webservice.onrender.com/collection/subjects", {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                this.subjects = data.map((subject) => ({
+                                    ...subject,
+                                    _id: String(subject._id),
+                                }));
+                            })
+                            .catch((error) => {
+                                console.error("Error fetching subjects:", error);
+                            });
+                    },
+                },
+            });
+        </script>
+        <script src="js/animation.js"></script>
+    </body>
 </html>
