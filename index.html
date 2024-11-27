@@ -24,7 +24,7 @@
                 <div v-if="showSubject">
                     <div v-for="subject in sortedSubjects" :key="subject._id" class="subject-card">
                         <figure>
-                            <img :src="subject.image" alt="Subject Image" />
+                            <img :src="imageLink(subject.image)" alt="Subject Image" />
                         </figure>
                         <h2>{{ subject.subject }}</h2>
                         <p>Location: {{ subject.location }}</p>
@@ -123,6 +123,9 @@
                     },
                     sortedSubjects() {
                         return [...this.subjects].sort((a, b) => a.price - b.price);
+                    },
+                    imageLink(image) {
+                        return `https://after-school-webservice.onrender.com/static/${image}`;
                     },
                 },
                 methods: {
