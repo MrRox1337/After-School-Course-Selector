@@ -21,6 +21,9 @@
 			</header>
 			<main>
 				<div v-if="showSubject">
+					<div class="search-container">
+						<input type="text" placeholder="Search" v-model="searchQuery" v-on:input="performSearch" />
+					</div>
 					<div class="sort-controls">
 						<button v-on:click="sortBy('subject', 'asc')">Sort by Name (A-Z)</button>
 						<button v-on:click="sortBy('subject', 'desc')">Sort by Name (Z-A)</button>
@@ -125,6 +128,7 @@
 					cart: [],
 					currentSort: null,
 					sortOrder: null,
+					searchQuery: "",
 				},
 				created() {
 					this.fetchSubjects();
@@ -257,6 +261,33 @@
 					resetSort() {
 						this.currentSort = null;
 						this.sortOrder = null;
+					},
+					performSearch() {
+						const query = this.searchQuery.trim();
+
+						// Avoid making a backend call if the search query is empty
+						if (query === "") {
+							this.fetchSubjects();
+							return;
+						}
+
+						// Fetch search results from the server
+						fetch(`https://after-school-webservice.onrender.com/search/subjects?q=${query}`, {
+							method: "GET",
+							headers: {
+								"Content-Type": "application/json",
+							},
+						})
+							.then((response) => response.json())
+							.then((data) => {
+								this.subjects = data.map((subject) => ({
+									...subject,
+									_id: String(subject._id),
+								}));
+							})
+							.catch((error) => {
+								console.error("Error performing search:", error);
+							});
 					},
 				},
 			});
