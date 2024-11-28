@@ -5,7 +5,10 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Vue.js Afterschool Course Selector</title>
 		<script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+		/>
 		<link rel="stylesheet" href="css/style.css" />
 	</head>
 	<body>
@@ -17,22 +20,41 @@
 					{{ cartItemCount }}
 					<span class="fas fa-shopping-cart"></span> View Cart
 				</button>
-				<button v-else v-on:click="toggleCheckout"><span class="fas fa-arrow-left"></span> Go Back</button>
+				<button v-else v-on:click="toggleCheckout">
+					<span class="fas fa-arrow-left"></span> Go Back
+				</button>
 			</header>
 			<main>
 				<div v-if="showSubject">
 					<div class="search-container">
-						<input type="text" placeholder="Search" v-model="searchQuery" v-on:input="performSearch" />
+						<input
+							type="text"
+							placeholder="Search"
+							v-model="searchQuery"
+							v-on:input="performSearch"
+						/>
 					</div>
 					<div class="sort-controls">
 						<button v-on:click="sortBy('subject', 'asc')">Sort by Name (A-Z)</button>
 						<button v-on:click="sortBy('subject', 'desc')">Sort by Name (Z-A)</button>
-						<button v-on:click="sortBy('spaces', 'asc')">Sort by Seats (Low-High)</button>
-						<button v-on:click="sortBy('spaces', 'desc')">Sort by Seats (High-Low)</button>
-						<button v-on:click="sortBy('location', 'asc')">Sort by Location (A-Z)</button>
-						<button v-on:click="sortBy('location', 'desc')">Sort by Location (Z-A)</button>
-						<button v-on:click="sortBy('price', 'asc')">Sort by Price (Low-High)</button>
-						<button v-on:click="sortBy('price', 'desc')">Sort by Price (High-Low)</button>
+						<button v-on:click="sortBy('spaces', 'asc')">
+							Sort by Seats (Low-High)
+						</button>
+						<button v-on:click="sortBy('spaces', 'desc')">
+							Sort by Seats (High-Low)
+						</button>
+						<button v-on:click="sortBy('location', 'asc')">
+							Sort by Location (A-Z)
+						</button>
+						<button v-on:click="sortBy('location', 'desc')">
+							Sort by Location (Z-A)
+						</button>
+						<button v-on:click="sortBy('price', 'asc')">
+							Sort by Price (Low-High)
+						</button>
+						<button v-on:click="sortBy('price', 'desc')">
+							Sort by Price (High-Low)
+						</button>
 						<button v-on:click="resetSort">Reset View</button>
 					</div>
 					<div v-for="subject in currentSubjects" :key="subject._id" class="subject-card">
@@ -60,7 +82,13 @@
 							<label class="title">Your Cart</label>
 							<div class="products">
 								<div v-for="item in uniqueCartItems" :key="item._id">
-									<img :src="item.image" alt="item icon" class="item-icon" width="60" height="60" />
+									<img
+										:src="item.image"
+										alt="item icon"
+										class="item-icon"
+										width="60"
+										height="60"
+									/>
 									<div class="product">
 										<div>
 											<span>{{ item.subject }}</span>
@@ -71,7 +99,10 @@
 												<span class="fas fa-minus"></span>
 											</button>
 											<label>{{ cartCount(item._id) }}</label>
-											<button v-if="canAddToCart(item)" v-on:click="addToCart(item)">
+											<button
+												v-if="canAddToCart(item)"
+												v-on:click="addToCart(item)"
+											>
 												<span class="fas fa-plus"></span>
 											</button>
 											<button v-else disabled>
@@ -92,7 +123,11 @@
 									placeholder="Enter full name"
 									class="input_field"
 								/>
-								<input v-model.trim="order.phone" placeholder="971XXXXXXXXX" class="input_field" />
+								<input
+									v-model.trim="order.phone"
+									placeholder="971XXXXXXXXX"
+									class="input_field"
+								/>
 							</form>
 						</div>
 
@@ -106,7 +141,9 @@
 							</div>
 							<div class="checkout--footer">
 								<label class="price"><sup>$</sup>{{ totalPrice }}</label>
-								<button v-on:click="submitForm" class="checkout-btn">Checkout</button>
+								<button v-on:click="submitForm" class="checkout-btn">
+									Checkout
+								</button>
 							</div>
 						</div>
 					</div>
@@ -144,7 +181,8 @@
 					},
 					uniqueCartItems() {
 						return this.cart.filter(
-							(item, index, self) => self.findIndex((t) => t._id === item._id) === index
+							(item, index, self) =>
+								self.findIndex((t) => t._id === item._id) === index
 						);
 					},
 					currentSubjects() {
@@ -199,19 +237,24 @@
 							const updatedSubject = { spaces: spacesLeft };
 
 							// Send the PUT request to update the subject
-							fetch(`https://after-school-webservice.onrender.com/collection/subjects/${item._id}`, {
-								method: "PUT",
-								headers: {
-									"Content-Type": "application/json",
-								},
-								body: JSON.stringify(updatedSubject),
-							})
+							fetch(
+								`https://after-school-webservice.onrender.com/collection/subjects/${item._id}`,
+								{
+									method: "PUT",
+									headers: {
+										"Content-Type": "application/json",
+									},
+									body: JSON.stringify(updatedSubject),
+								}
+							)
 								.then((response) => response.json())
 								.then((responseJSON) => {
 									if (responseJSON.msg === "success") {
 										console.log(`Updated spaces for subject: ${item._id}`);
 									} else {
-										console.error(`Failed to update spaces for subject: ${item._id}`);
+										console.error(
+											`Failed to update spaces for subject: ${item._id}`
+										);
 									}
 								})
 								.catch((error) => {
@@ -272,12 +315,15 @@
 						}
 
 						// Fetch search results from the server
-						fetch(`https://after-school-webservice.onrender.com/search/subjects?q=${query}`, {
-							method: "GET",
-							headers: {
-								"Content-Type": "application/json",
-							},
-						})
+						fetch(
+							`https://after-school-webservice.onrender.com/search/subjects?query=${query}`,
+							{
+								method: "GET",
+								headers: {
+									"Content-Type": "application/json",
+								},
+							}
+						)
 							.then((response) => response.json())
 							.then((data) => {
 								this.subjects = data.map((subject) => ({
