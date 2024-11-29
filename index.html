@@ -56,7 +56,7 @@
                             <label class="title">Your Cart</label>
                             <div class="products">
                                 <div v-for="item in uniqueCartItems" :key="item._id">
-                                    <img :src="item.image" alt="item icon" class="item-icon" width="60" height="60" />
+                                    <img :src="imageLink(item.image)" alt="item icon" class="item-icon" width="60" height="60" />
                                     <div class="product">
                                         <div>
                                             <span>{{ item.subject }}</span>
@@ -83,8 +83,8 @@
                         <div class="card coupons">
                             <label class="title">Enter Customer Details</label>
                             <form class="form">
-                                <input v-model.trim="order.fullName" placeholder="Enter full name" class="input_field" />
-                                <input v-model.trim="order.phone" placeholder="971XXXXXXXXX" class="input_field" />
+                                <input v-model.trim="order.fullName" placeholder="Enter full name" class="input_field" required />
+                                <input v-model.trim="order.phone" placeholder="971XXXXXXXXX" class="input_field" required />
                             </form>
                         </div>
 
@@ -98,7 +98,8 @@
                             </div>
                             <div class="checkout--footer">
                                 <label class="price"><sup>$</sup>{{ totalPrice }}</label>
-                                <button v-on:click="submitForm" class="checkout-btn">Checkout</button>
+                                <button v-if="isOrderValid" v-on:click="submitForm" class="checkout-btn">Checkout</button>
+                                <button v-else disabled class="checkout-btn">Checkout</button>
                             </div>
                         </div>
                     </div>
