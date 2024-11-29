@@ -1,300 +1,414 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Vue.js Afterschool Course Selector</title>
-        <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
-        <link rel="stylesheet" href="css/style.css" />
-    </head>
-    <body>
-        <div id="App">
-            <header>
-                <h1 id="sitename" data-value="REMEDIALSELECT">REMEDIALSELECT</h1>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue.js Afterschool Course Selector</title>
 
-                <button v-if="showSubject" v-bind:disabled="!canToggleCheckout" v-on:click="toggleCheckout">
-                    {{ cartItemCount }}
-                    <span class="fas fa-shopping-cart"></span> View Cart
-                </button>
-                <button v-else v-on:click="toggleCheckout"><span class="fas fa-arrow-left"></span> Go Back</button>
-            </header>
-            <main>
-                <div v-if="showSubject">
-                    <div class="search-container">
-                        <input type="text" placeholder="Search" v-model="searchQuery" v-on:input="performSearch" />
-                    </div>
-                    <div class="sort-controls">
-                        <button v-on:click="sortBy('subject', 'asc')">Sort by Name (A-Z)</button>
-                        <button v-on:click="sortBy('subject', 'desc')">Sort by Name (Z-A)</button>
-                        <button v-on:click="sortBy('spaces', 'asc')">Sort by Seats (Low-High)</button>
-                        <button v-on:click="sortBy('spaces', 'desc')">Sort by Seats (High-Low)</button>
-                        <button v-on:click="sortBy('location', 'asc')">Sort by Location (A-Z)</button>
-                        <button v-on:click="sortBy('location', 'desc')">Sort by Location (Z-A)</button>
-                        <button v-on:click="sortBy('price', 'asc')">Sort by Price (Low-High)</button>
-                        <button v-on:click="sortBy('price', 'desc')">Sort by Price (High-Low)</button>
-                        <button v-on:click="resetSort">Reset View</button>
-                    </div>
-                    <div v-for="subject in currentSubjects" :key="subject._id" class="subject-card">
-                        <figure>
-                            <img :src="imageLink(subject.image)" alt="Subject Image" />
-                        </figure>
-                        <h2>{{ subject.subject }}</h2>
-                        <p>Location: {{ subject.location }}</p>
-                        <p>Price: <em>USD($) {{ subject.price }}.00</em></p>
-                        <p>Spaces: {{ subject.spaces }}</p>
-                        <button v-if="canAddToCart(subject)" v-on:click="addToCart(subject)"><span class="fas fa-cart-plus"></span> Add to Cart</button>
-                        <button v-else disabled>All Out!</button>
-                        <span v-if="subject.spaces - cartCount(subject._id) < 3"> Only {{ subject.spaces - cartCount(subject._id) }} left! </span>
-                    </div>
-                </div>
+		<!-- Vue.js CDN for reactive framework support -->
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
 
-                <!-- Checkout Page -->
-                <div v-else class="checkout-page">
-                    <div class="master-container">
-                        <div class="card cart">
-                            <label class="title">Your Cart</label>
-                            <div class="products">
-                                <div v-for="item in uniqueCartItems" :key="item._id">
-                                    <img :src="imageLink(item.image)" alt="item icon" class="item-icon" width="60" height="60" />
-                                    <div class="product">
-                                        <div>
-                                            <span>{{ item.subject }}</span>
-                                            <p>{{ item.location }}</p>
-                                        </div>
-                                        <div class="quantity">
-                                            <button v-on:click="removeOne(item)">
-                                                <span class="fas fa-minus"></span>
-                                            </button>
-                                            <label>{{ cartCount(item._id) }}</label>
-                                            <button v-if="canAddToCart(item)" v-on:click="addToCart(item)">
-                                                <span class="fas fa-plus"></span>
-                                            </button>
-                                            <button v-else disabled>
-                                                <span class="fas fa-plus"></span>
-                                            </button>
-                                        </div>
-                                        <label class="price small">${{ item.price }}</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+		<!-- Font Awesome for icons -->
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+		/>
 
-                        <div class="card coupons">
-                            <label class="title">Enter Customer Details</label>
-                            <form class="form">
-                                <input v-model.trim="order.fullName" placeholder="Enter full name" class="input_field" required />
-                                <input v-model.trim="order.phone" placeholder="971XXXXXXXXX" class="input_field" required />
-                            </form>
-                        </div>
+		<!-- External CSS for custom styling -->
+		<link rel="stylesheet" href="css/style.css" />
+	</head>
+	<body>
+		<!-- Root Vue.js Application -->
+		<div id="App">
+			<!-- Header Section -->
+			<header>
+				<!-- Dynamic site name with animation on hover -->
+				<h1 id="sitename" data-value="REMEDIALSELECT">REMEDIALSELECT</h1>
 
-                        <div class="card checkout">
-                            <label class="title">Checkout Preview</label>
-                            <div class="details">
-                                <span>Your Name:</span>
-                                <span>{{ order.fullName }}</span>
-                                <span>Your Phone Number:</span>
-                                <span>{{ order.phone }}</span>
-                            </div>
-                            <div class="checkout--footer">
-                                <label class="price"><sup>$</sup>{{ totalPrice }}</label>
-                                <button v-if="isOrderValid" v-on:click="submitForm" class="checkout-btn">Checkout</button>
-                                <button v-else disabled class="checkout-btn">Checkout</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        </div>
+				<!-- Cart and Navigation Buttons -->
+				<button
+					v-if="showSubject"
+					v-bind:disabled="!canToggleCheckout"
+					v-on:click="toggleCheckout"
+				>
+					{{ cartItemCount }}
+					<span class="fas fa-shopping-cart"></span> View Cart
+				</button>
+				<button v-else v-on:click="toggleCheckout">
+					<span class="fas fa-arrow-left"></span> Go Back
+				</button>
+			</header>
 
-        <script>
-            let webstore = new Vue({
-                el: "#App",
-                data: {
-                    showSubject: true,
-                    subjects: [],
-                    sortedSubjects: [],
-                    order: {
-                        fullName: "",
-                        phone: "",
-                    },
-                    cart: [],
-                    currentSort: null,
-                    sortOrder: null,
-                    searchQuery: "",
-                },
-                created() {
-                    this.fetchSubjects();
-                },
-                computed: {
-                    cartItemCount() {
-                        return this.cart.length || "";
-                    },
-                    totalPrice() {
-                        return this.uniqueCartItems.reduce((sum, item) => {
-                            return sum + item.price * this.cartCount(item._id);
-                        }, 0);
-                    },
-                    uniqueCartItems() {
-                        return this.cart.filter((item, index, self) => self.findIndex((t) => t._id === item._id) === index);
-                    },
-                    currentSubjects() {
-                        return this.currentSort ? this.sortedSubjects : this.subjects;
-                    },
-                    canToggleCheckout() {
-                        // Prevent toggle to checkout if cart is empty
-                        return this.cart.length > 0;
-                    },
-                    isOrderValid() {
-                        // Ensure name and phone are not empty and phone format is valid
-                        return this.order.fullName.trim() !== "" && /^[+]?[\d]+$/.test(this.order.phone.trim());
-                    },
-                },
-                methods: {
-                    addToCart(item) {
-                        this.cart.push(item);
-                    },
-                    removeOne(item) {
-                        const index = this.cart.findIndex((cartItem) => cartItem._id === item._id);
-                        if (index !== -1) this.cart.splice(index, 1);
-                    },
-                    toggleCheckout() {
-                        // Only toggle to checkout if the cart is not empty
-                        if (this.showSubject || this.canToggleCheckout) {
-                            this.showSubject = !this.showSubject;
-                        }
-                    },
-                    submitForm() {
-                        if (!this.isOrderValid) return;
+			<!-- Main Content Section -->
+			<main>
+				<!-- Course Selection Page -->
+				<div v-if="showSubject">
+					<!-- Search Box -->
+					<div class="search-container">
+						<input
+							type="text"
+							placeholder="Search"
+							v-model="searchQuery"
+							v-on:input="performSearch"
+						/>
+					</div>
 
-                        const newOrder = {
-                            order: this.order,
-                            cart: this.uniqueCartItems,
-                        };
+					<!-- Sorting Controls -->
+					<div class="sort-controls">
+						<button v-on:click="sortBy('subject', 'asc')">Sort by Name (A-Z)</button>
+						<button v-on:click="sortBy('subject', 'desc')">Sort by Name (Z-A)</button>
+						<button v-on:click="sortBy('spaces', 'asc')">
+							Sort by Seats (Low-High)
+						</button>
+						<button v-on:click="sortBy('spaces', 'desc')">
+							Sort by Seats (High-Low)
+						</button>
+						<button v-on:click="sortBy('location', 'asc')">
+							Sort by Location (A-Z)
+						</button>
+						<button v-on:click="sortBy('location', 'desc')">
+							Sort by Location (Z-A)
+						</button>
+						<button v-on:click="sortBy('price', 'asc')">
+							Sort by Price (Low-High)
+						</button>
+						<button v-on:click="sortBy('price', 'desc')">
+							Sort by Price (High-Low)
+						</button>
+						<button v-on:click="resetSort">Reset View</button>
+					</div>
 
-                        // Submit the order
-                        fetch("https://after-school-webservice.onrender.com/collection/orders", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify(newOrder),
-                        })
-                            .then((response) => response.json())
-                            .then((responseJSON) => {
-                                // Notify the user
-                                alert("Order submitted successfully!");
+					<!-- Dynamic Subject Cards -->
+					<div v-for="subject in currentSubjects" :key="subject._id" class="subject-card">
+						<figure>
+							<img :src="imageLink(subject.image)" alt="Subject Image" />
+						</figure>
+						<h2>{{ subject.subject }}</h2>
+						<p>Location: {{ subject.location }}</p>
+						<p>Price: <em>USD($) {{ subject.price }}.00</em></p>
+						<p>Spaces: {{ subject.spaces }}</p>
+						<button v-if="canAddToCart(subject)" v-on:click="addToCart(subject)">
+							<span class="fas fa-cart-plus"></span> Add to Cart
+						</button>
+						<button v-else disabled>All Out!</button>
+						<span v-if="subject.spaces - cartCount(subject._id) < 3">
+							Only {{ subject.spaces - cartCount(subject._id) }} left!
+						</span>
+					</div>
+				</div>
 
-                                // Update spaces for each unique item in the cart
-                                this.updateSpaces();
-                            })
-                            .catch((error) => {
-                                console.error("Error submitting order:", error);
-                            });
-                    },
-                    updateSpaces() {
-                        // Loop through unique cart items
-                        this.uniqueCartItems.forEach((item) => {
-                            // Calculate the remaining spaces
-                            const spacesLeft = item.spaces - this.cartCount(item._id);
+				<!-- Checkout Page -->
+				<div v-else class="checkout-page">
+					<div class="master-container">
+						<!-- Cart Details -->
+						<div class="card cart">
+							<label class="title">Your Cart</label>
+							<div class="products">
+								<div v-for="item in uniqueCartItems" :key="item._id">
+									<img
+										:src="imageLink(item.image)"
+										alt="item icon"
+										class="item-icon"
+										width="60"
+										height="60"
+									/>
+									<div class="product">
+										<div>
+											<span>{{ item.subject }}</span>
+											<p>{{ item.location }}</p>
+										</div>
+										<div class="quantity">
+											<button v-on:click="removeOne(item)">
+												<span class="fas fa-minus"></span>
+											</button>
+											<label>{{ cartCount(item._id) }}</label>
+											<button
+												v-if="canAddToCart(item)"
+												v-on:click="addToCart(item)"
+											>
+												<span class="fas fa-plus"></span>
+											</button>
+											<button v-else disabled>
+												<span class="fas fa-plus"></span>
+											</button>
+										</div>
+										<label class="price small">${{ item.price }}</label>
+									</div>
+								</div>
+							</div>
+						</div>
 
-                            // Prepare the payload for updating spaces
-                            const updatedSubject = { spaces: spacesLeft };
+						<!-- Customer Details -->
+						<div class="card coupons">
+							<label class="title">Enter Customer Details</label>
+							<form class="form">
+								<input
+									v-model.trim="order.fullName"
+									placeholder="Enter full name"
+									class="input_field"
+									required
+								/>
+								<input
+									v-model.trim="order.phone"
+									placeholder="971XXXXXXXXX"
+									class="input_field"
+									required
+								/>
+							</form>
+						</div>
 
-                            // Send the PUT request to update the subject
-                            fetch(`https://after-school-webservice.onrender.com/collection/subjects/${item._id}`, {
-                                method: "PUT",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                },
-                                body: JSON.stringify(updatedSubject),
-                            })
-                                .then((response) => response.json())
-                                .then((responseJSON) => {
-                                    if (responseJSON.msg === "success") {
-                                        console.log(`Updated spaces for subject: ${item._id}`);
-                                    } else {
-                                        console.error(`Failed to update spaces for subject: ${item._id}`);
-                                    }
-                                })
-                                .catch((error) => {
-                                    console.error("Error updating subject:", error);
-                                });
-                        });
-                    },
-                    cartCount(id) {
-                        return this.cart.filter((item) => item._id === id).length;
-                    },
-                    canAddToCart(item) {
-                        return item.spaces > this.cartCount(item._id);
-                    },
-                    fetchSubjects() {
-                        fetch("https://after-school-webservice.onrender.com/collection/subjects", {
-                            method: "GET",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                        })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                this.subjects = data.map((subject) => ({
-                                    ...subject,
-                                    _id: String(subject._id),
-                                }));
-                            })
-                            .catch((error) => {
-                                console.error("Error fetching subjects:", error);
-                            });
-                    },
-                    imageLink(image) {
-                        return `https://after-school-webservice.onrender.com/${image}`;
-                    },
-                    sortBy(key, order) {
-                        this.currentSort = key;
-                        this.sortOrder = order;
-                        this.sortedSubjects = [...this.subjects].sort((a, b) => {
-                            const valA = a[key];
-                            const valB = b[key];
+						<!-- Checkout Summary -->
+						<div class="card checkout">
+							<label class="title">Checkout Preview</label>
+							<div class="details">
+								<span>Your Name:</span>
+								<span>{{ order.fullName }}</span>
+								<span>Your Phone Number:</span>
+								<span>{{ order.phone }}</span>
+							</div>
+							<div class="checkout--footer">
+								<label class="price"><sup>$</sup>{{ totalPrice }}</label>
+								<button
+									v-if="isOrderValid"
+									v-on:click="submitForm"
+									class="checkout-btn"
+								>
+									Checkout
+								</button>
+								<button v-else disabled class="checkout-btn">Checkout</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</main>
+		</div>
 
-                            if (order === "asc") return valA > valB ? 1 : -1;
-                            if (order === "desc") return valA < valB ? 1 : -1;
-                            return 0;
-                        });
-                    },
-                    resetSort() {
-                        this.currentSort = null;
-                        this.sortOrder = null;
-                    },
-                    performSearch() {
-                        const query = this.searchQuery.trim();
+		<!-- Vue.js Script for Functionality -->
+		<script>
+			let webstore = new Vue({
+				// Bind Vue instance to the HTML element with id "App"
+				el: "#App",
+				data: {
+					// Determines if the subject selection page is displayed
+					showSubject: true,
+					// Holds the list of all subjects fetched from the backend
+					subjects: [],
+					// Stores the currently sorted subjects for display
+					sortedSubjects: [],
+					// Stores order details input by the user
+					order: {
+						fullName: "", // Full name of the user
+						phone: "", // Contact phone number
+					},
+					// Tracks the items added to the cart
+					cart: [],
+					// Tracks the currently applied sort field
+					currentSort: null,
+					// Tracks the sorting order (ascending/descending)
+					sortOrder: null,
+					// Stores the user's search query for subjects
+					searchQuery: "",
+				},
+				// Lifecycle hook that runs when the Vue instance is created
+				created() {
+					// Fetch the list of subjects from the backend API
+					this.fetchSubjects();
+				},
+				computed: {
+					// Returns the total number of items in the cart
+					cartItemCount() {
+						return this.cart.length || ""; // Empty string if cart is empty
+					},
+					// Calculates the total price of all items in the cart
+					totalPrice() {
+						return this.uniqueCartItems.reduce((sum, item) => {
+							return sum + item.price * this.cartCount(item._id);
+						}, 0);
+					},
+					// Returns a list of unique items in the cart
+					uniqueCartItems() {
+						return this.cart.filter(
+							(item, index, self) =>
+								self.findIndex((t) => t._id === item._id) === index
+						);
+					},
+					// Determines the list of subjects to display based on sorting
+					currentSubjects() {
+						return this.currentSort ? this.sortedSubjects : this.subjects;
+					},
+					// Checks if toggling to the checkout page is allowed
+					canToggleCheckout() {
+						return this.cart.length > 0; // Only allow if the cart is not empty
+					},
+					// Validates the order details for submission
+					isOrderValid() {
+						return (
+							this.order.fullName.trim() !== "" && // Ensure name is not empty
+							/^[+]?[\d]+$/.test(this.order.phone.trim()) // Validate phone format
+						);
+					},
+				},
+				methods: {
+					// Adds a specific item to the cart
+					addToCart(item) {
+						this.cart.push(item);
+					},
+					// Removes one instance of a specific item from the cart
+					removeOne(item) {
+						const index = this.cart.findIndex((cartItem) => cartItem._id === item._id);
+						if (index !== -1) this.cart.splice(index, 1);
+					},
+					// Toggles between the subject selection and checkout views
+					toggleCheckout() {
+						if (this.showSubject || this.canToggleCheckout) {
+							this.showSubject = !this.showSubject;
+						}
+					},
+					// Submits the order and sends the data to the backend API
+					submitForm() {
+						if (!this.isOrderValid) return; // Prevent submission if validation fails
 
-                        // Avoid making a backend call if the search query is empty
-                        if (query === "") {
-                            this.fetchSubjects();
-                            return;
-                        }
+						const newOrder = {
+							order: this.order, // Customer details
+							cart: this.uniqueCartItems, // Items in the cart
+						};
 
-                        // Fetch search results from the server
-                        fetch(`https://after-school-webservice.onrender.com/search/subjects?query=${query}`, {
-                            method: "GET",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                        })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                this.subjects = data.map((subject) => ({
-                                    ...subject,
-                                    _id: String(subject._id),
-                                }));
-                            })
-                            .catch((error) => {
-                                console.error("Error performing search:", error);
-                            });
-                    },
-                },
-            });
-        </script>
-        <script src="js/animation.js"></script>
-    </body>
+						// Send order details to the backend
+						fetch("https://after-school-webservice.onrender.com/collection/orders", {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify(newOrder),
+						})
+							.then((response) => response.json())
+							.then((responseJSON) => {
+								alert("Order submitted successfully!"); // Notify the user
+								this.updateSpaces(); // Update the available spaces for subjects
+							})
+							.catch((error) => {
+								console.error("Error submitting order:", error);
+							});
+					},
+					// Updates the available spaces for all subjects in the cart
+					updateSpaces() {
+						this.uniqueCartItems.forEach((item) => {
+							const spacesLeft = item.spaces - this.cartCount(item._id);
+
+							const updatedSubject = { spaces: spacesLeft };
+
+							// Send updated spaces to the backend
+							fetch(
+								`https://after-school-webservice.onrender.com/collection/subjects/${item._id}`,
+								{
+									method: "PUT",
+									headers: {
+										"Content-Type": "application/json",
+									},
+									body: JSON.stringify(updatedSubject),
+								}
+							)
+								.then((response) => response.json())
+								.then((responseJSON) => {
+									if (responseJSON.msg === "success") {
+										console.log(`Updated spaces for subject: ${item._id}`);
+									} else {
+										console.error(
+											`Failed to update spaces for subject: ${item._id}`
+										);
+									}
+								})
+								.catch((error) => {
+									console.error("Error updating subject:", error);
+								});
+						});
+					},
+					// Returns the count of a specific item in the cart
+					cartCount(id) {
+						return this.cart.filter((item) => item._id === id).length;
+					},
+					// Checks if an item can be added to the cart (based on available spaces)
+					canAddToCart(item) {
+						return item.spaces > this.cartCount(item._id);
+					},
+					// Fetches the list of subjects from the backend API
+					fetchSubjects() {
+						fetch("https://after-school-webservice.onrender.com/collection/subjects", {
+							method: "GET",
+							headers: {
+								"Content-Type": "application/json",
+							},
+						})
+							.then((response) => response.json())
+							.then((data) => {
+								// Map fetched data to ensure `_id` is a string
+								this.subjects = data.map((subject) => ({
+									...subject,
+									_id: String(subject._id),
+								}));
+							})
+							.catch((error) => {
+								console.error("Error fetching subjects:", error);
+							});
+					},
+					// Generates the full URL for a subject's image
+					imageLink(image) {
+						return `https://after-school-webservice.onrender.com/${image}`;
+					},
+					// Sorts subjects based on a key and order (asc/desc)
+					sortBy(key, order) {
+						this.currentSort = key;
+						this.sortOrder = order;
+
+						this.sortedSubjects = [...this.subjects].sort((a, b) => {
+							const valA = a[key];
+							const valB = b[key];
+
+							if (order === "asc") return valA > valB ? 1 : -1;
+							if (order === "desc") return valA < valB ? 1 : -1;
+							return 0;
+						});
+					},
+					// Resets the view to the original unsorted list of subjects
+					resetSort() {
+						this.currentSort = null;
+						this.sortOrder = null;
+					},
+					// Performs a search based on the user's query
+					performSearch() {
+						const query = this.searchQuery.trim();
+
+						if (query === "") {
+							this.fetchSubjects(); // Fetch all subjects if search query is empty
+							return;
+						}
+
+						// Fetch search results from the backend
+						fetch(
+							`https://after-school-webservice.onrender.com/search/subjects?query=${query}`,
+							{
+								method: "GET",
+								headers: {
+									"Content-Type": "application/json",
+								},
+							}
+						)
+							.then((response) => response.json())
+							.then((data) => {
+								this.subjects = data.map((subject) => ({
+									...subject,
+									_id: String(subject._id),
+								}));
+							})
+							.catch((error) => {
+								console.error("Error performing search:", error);
+							});
+					},
+				},
+			});
+		</script>
+
+		<!-- Script to Animate Website Title -->
+		<script src="js/animation.js"></script>
+	</body>
 </html>
