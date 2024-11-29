@@ -20,9 +20,22 @@
                 <button v-else v-on:click="toggleCheckout"><span class="fas fa-arrow-left"></span> Go Back</button>
             </header>
             <main>
-                <!-- Subject Catalog -->
                 <div v-if="showSubject">
-                    <div v-for="subject in sortedSubjects" :key="subject._id" class="subject-card">
+                    <div class="search-container">
+                        <input type="text" placeholder="Search" v-model="searchQuery" v-on:input="performSearch" />
+                    </div>
+                    <div class="sort-controls">
+                        <button v-on:click="sortBy('subject', 'asc')">Sort by Name (A-Z)</button>
+                        <button v-on:click="sortBy('subject', 'desc')">Sort by Name (Z-A)</button>
+                        <button v-on:click="sortBy('spaces', 'asc')">Sort by Seats (Low-High)</button>
+                        <button v-on:click="sortBy('spaces', 'desc')">Sort by Seats (High-Low)</button>
+                        <button v-on:click="sortBy('location', 'asc')">Sort by Location (A-Z)</button>
+                        <button v-on:click="sortBy('location', 'desc')">Sort by Location (Z-A)</button>
+                        <button v-on:click="sortBy('price', 'asc')">Sort by Price (Low-High)</button>
+                        <button v-on:click="sortBy('price', 'desc')">Sort by Price (High-Low)</button>
+                        <button v-on:click="resetSort">Reset View</button>
+                    </div>
+                    <div v-for="subject in currentSubjects" :key="subject._id" class="subject-card">
                         <figure>
                             <img :src="imageLink(subject.image)" alt="Subject Image" />
                         </figure>
@@ -30,7 +43,6 @@
                         <p>Location: {{ subject.location }}</p>
                         <p>Price: <em>USD($) {{ subject.price }}.00</em></p>
                         <p>Spaces: {{ subject.spaces }}</p>
-
                         <button v-if="canAddToCart(subject)" v-on:click="addToCart(subject)"><span class="fas fa-cart-plus"></span> Add to Cart</button>
                         <button v-else disabled>All Out!</button>
                         <span v-if="subject.spaces - cartCount(subject._id) < 3"> Only {{ subject.spaces - cartCount(subject._id) }} left! </span>
@@ -100,11 +112,15 @@
                 data: {
                     showSubject: true,
                     subjects: [],
+                    sortedSubjects: [],
                     order: {
                         fullName: "",
                         phone: "",
                     },
                     cart: [],
+                    currentSort: null,
+                    sortOrder: null,
+                    searchQuery: "",
                 },
                 created() {
                     this.fetchSubjects();
@@ -121,8 +137,8 @@
                     uniqueCartItems() {
                         return this.cart.filter((item, index, self) => self.findIndex((t) => t._id === item._id) === index);
                     },
-                    sortedSubjects() {
-                        return [...this.subjects].sort((a, b) => a.price - b.price);
+                    currentSubjects() {
+                        return this.currentSort ? this.sortedSubjects : this.subjects;
                     },
                     canToggleCheckout() {
                         // Prevent toggle to checkout if cart is empty
@@ -155,6 +171,7 @@
                             cart: this.uniqueCartItems,
                         };
 
+                        // Submit the order
                         fetch("https://after-school-webservice.onrender.com/collection/orders", {
                             method: "POST",
                             headers: {
@@ -163,17 +180,27 @@
                             body: JSON.stringify(newOrder),
                         })
                             .then((response) => response.json())
-                            .then(() => {
+                            .then((responseJSON) => {
+                                // Notify the user
                                 alert("Order submitted successfully!");
+
+                                // Update spaces for each unique item in the cart
                                 this.updateSpaces();
                             })
-                            .catch((error) => console.error("Error submitting order:", error));
+                            .catch((error) => {
+                                console.error("Error submitting order:", error);
+                            });
                     },
                     updateSpaces() {
+                        // Loop through unique cart items
                         this.uniqueCartItems.forEach((item) => {
+                            // Calculate the remaining spaces
                             const spacesLeft = item.spaces - this.cartCount(item._id);
+
+                            // Prepare the payload for updating spaces
                             const updatedSubject = { spaces: spacesLeft };
 
+                            // Send the PUT request to update the subject
                             fetch(`https://after-school-webservice.onrender.com/collection/subjects/${item._id}`, {
                                 method: "PUT",
                                 headers: {
@@ -189,7 +216,9 @@
                                         console.error(`Failed to update spaces for subject: ${item._id}`);
                                     }
                                 })
-                                .catch((error) => console.error("Error updating subject:", error));
+                                .catch((error) => {
+                                    console.error("Error updating subject:", error);
+                                });
                         });
                     },
                     cartCount(id) {
@@ -212,15 +241,59 @@
                                     _id: String(subject._id),
                                 }));
                             })
-                            .catch((error) => console.error("Error fetching subjects:", error));
+                            .catch((error) => {
+                                console.error("Error fetching subjects:", error);
+                            });
                     },
                     imageLink(image) {
                         return `https://after-school-webservice.onrender.com/${image}`;
                     },
+                    sortBy(key, order) {
+                        this.currentSort = key;
+                        this.sortOrder = order;
+                        this.sortedSubjects = [...this.subjects].sort((a, b) => {
+                            const valA = a[key];
+                            const valB = b[key];
+
+                            if (order === "asc") return valA > valB ? 1 : -1;
+                            if (order === "desc") return valA < valB ? 1 : -1;
+                            return 0;
+                        });
+                    },
+                    resetSort() {
+                        this.currentSort = null;
+                        this.sortOrder = null;
+                    },
+                    performSearch() {
+                        const query = this.searchQuery.trim();
+
+                        // Avoid making a backend call if the search query is empty
+                        if (query === "") {
+                            this.fetchSubjects();
+                            return;
+                        }
+
+                        // Fetch search results from the server
+                        fetch(`https://after-school-webservice.onrender.com/search/subjects?query=${query}`, {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                this.subjects = data.map((subject) => ({
+                                    ...subject,
+                                    _id: String(subject._id),
+                                }));
+                            })
+                            .catch((error) => {
+                                console.error("Error performing search:", error);
+                            });
+                    },
                 },
             });
         </script>
-
         <script src="js/animation.js"></script>
     </body>
 </html>

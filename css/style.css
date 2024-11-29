@@ -102,6 +102,51 @@ main > div > div:hover {
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Increases the shadow on hover */
 }
 
+/* Sort buttons */
+
+.sort-controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-bottom: 20px;
+	justify-content: center;
+}
+
+.sort-controls button {
+	background-color: #4caf50;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	padding: 10px 15px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.sort-controls button:hover {
+	background-color: #45a049;
+}
+
+/* Search feature */
+
+.search-container {
+	margin: 20px 0;
+	text-align: center;
+}
+
+.search-container input {
+	width: 80%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	font-size: 16px;
+}
+
+.search-container input:focus {
+	outline: none;
+	border-color: #007bff;
+	box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
 /* Checkout page */
 .master-container {
 	display: grid;
