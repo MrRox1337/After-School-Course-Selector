@@ -24,7 +24,7 @@ A vueJS front end application for an eCommerce website to allow school students 
 
 ```
 {
-    "\_id": "65186168151a6521b8321e",
+    "_id": "65186168151a6521b8321e",
     "subject": "Olympiad Practice",
     "location": "Block 19",
     "price": 125,
@@ -37,7 +37,7 @@ A vueJS front end application for an eCommerce website to allow school students 
 
 ```
 {
-    "\_id": "a6ec51r32dffadcca6e5d2",
+    "_id": "a6ec51r32dffadcca6e5d2",
     "order": {
         "fullName": "Aman Mishra",
         "phone": "971551528861"
