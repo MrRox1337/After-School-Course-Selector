@@ -1,29 +1,33 @@
-Class: CST3144
-Name: Aman Mishra
-MISIS: M00983641
-Professor: Dr. Chinnu Mary George
+# Class: CST3144
 
-Links for submission:-
+## Name: Aman Mishra
 
-<p>GitHub Repo Frontend: https://github.com/MrRox1337/After-School-Course-Selector</p>
-<p>GitHub Repo Backend: https://github.com/MrRox1337/After-School-Webservice</p>
-<p>Deployed Frontend: https://mrrox1337.github.io/After-School-Course-Selector/</p>
-<p>Deployed Backend Collection for Subjects: https://after-school-webservice.onrender.com/collection/subjects/</p>
+## MISIS: M00983641
 
-Database Collection Document Preview:-
+## Professor: Dr. Chinnu Mary George
+
+### Links for submission:-
+
+-   <p>GitHub Repo Frontend: https://github.com/MrRox1337/After-School-Course-Selector</p>
+-   <p>GitHub Repo Backend: https://github.com/MrRox1337/After-School-Webservice</p>
+-   <p>Deployed Frontend: https://mrrox1337.github.io/After-School-Course-Selector/</p>
+-   <p>Deployed Backend Collection for Subjects: https://after-school-webservice.onrender.com/collection/subjects/</p>
+
+### Database Collection Document Preview:-
 
 -   Subject collection:
 
-````{
+```{
     "\_id": "65186168151a6521b8321e",
     "subject": "Olympiad Practice",
     "location": "Block 19",
     "price": 125,
     "image": "static/subject1.jpg",
     "spaces": 5
-}```
+}
+```
 
-- Orders collection:
+-   Orders collection:
 
 ```{
     "\_id": "a6ec51r32dffadcca6e5d2",
@@ -42,4 +46,4 @@ Database Collection Document Preview:-
         }
     ]
 }
-````
+```
