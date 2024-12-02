@@ -10,7 +10,7 @@ A vueJS front end application for an eCommerce website to allow school students 
 
 <p>Professor: Dr. Chinnu Mary George</p>
 
-### Links for submission:-
+## Links for submission
 
 -   <p>GitHub Repo Frontend: https://github.com/MrRox1337/After-School-Course-Selector</p>
 -   <p>GitHub Repo Backend: https://github.com/MrRox1337/After-School-Webservice</p>
@@ -18,7 +18,7 @@ A vueJS front end application for an eCommerce website to allow school students 
 -   <p>Deployed Backend Collection for Subjects: https://after-school-webservice.onrender.com/collection/subjects/</p>
 -   <p>Deployed Backend Collection for Orders: https://after-school-webservice.onrender.com/collection/orders/</p>
 
-### Database Collection Document Preview:-
+## Database Collection Document Preview
 
 -   Subject collection:
 
