@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Vue.js Afterschool Course Selector</title>
+		<title>Afterschool Course Selector</title>
 
 		<!-- Vue.js CDN for reactive framework support -->
 		<script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
@@ -78,7 +78,7 @@
 						<button v-on:click="resetSort">Reset View</button>
 					</div>
 
-					<!-- Dynamic Subject Cards -->
+					<!-- Subject Cards -->
 					<div v-for="subject in currentSubjects" :key="subject._id" class="subject-card">
 						<figure>
 							<img :src="imageLink(subject.image)" alt="Subject Image" />
@@ -183,33 +183,33 @@
 			</main>
 		</div>
 
-		<!-- Vue.js Script for Functionality -->
+		<!-- Vue.js Application Script -->
 		<script>
 			let webstore = new Vue({
 				// Bind Vue instance to the HTML element with id "App"
 				el: "#App",
 				data: {
-					// Determines if the subject selection page is displayed
+					// Determines if the subject catalog page is displayed
 					showSubject: true,
-					// Holds the list of all subjects fetched from the backend
+					// List of all subjects fetched from the backend
 					subjects: [],
-					// Stores the currently sorted subjects for display
+					// Currently sorted subjects for display
 					sortedSubjects: [],
-					// Stores order details input by the user
+					// Order details input by the user
 					order: {
 						fullName: "", // Full name of the user
 						phone: "", // Contact phone number
 					},
 					// Tracks the items added to the cart
 					cart: [],
-					// Tracks the currently applied sort field
+					// Currently applied sort type
 					currentSort: null,
-					// Tracks the sorting order (ascending/descending)
+					// Sorting order (ascending/descending)
 					sortOrder: null,
 					// Stores the user's search query for subjects
 					searchQuery: "",
 				},
-				// Lifecycle hook that runs when the Vue instance is created
+				// Function that runs when the Vue instance is created
 				created() {
 					// Fetch the list of subjects from the backend API
 					this.fetchSubjects();
@@ -258,7 +258,7 @@
 						const index = this.cart.findIndex((cartItem) => cartItem._id === item._id);
 						if (index !== -1) this.cart.splice(index, 1);
 					},
-					// Toggles between the subject selection and checkout views
+					// Toggles between the subject catalog and checkout pages
 					toggleCheckout() {
 						if (this.showSubject || this.canToggleCheckout) {
 							this.showSubject = !this.showSubject;
@@ -340,9 +340,9 @@
 							},
 						})
 							.then((response) => response.json())
-							.then((data) => {
+							.then((responseJSON) => {
 								// Map fetched data to ensure `_id` is a string
-								this.subjects = data.map((subject) => ({
+								this.subjects = responseJSON.map((subject) => ({
 									...subject,
 									_id: String(subject._id),
 								}));
