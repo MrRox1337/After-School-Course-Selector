@@ -1,10 +1,14 @@
-# Class: CST3144
+# After School Course Selector Front-End
 
-## Name: Aman Mishra
+A vueJS front end application for an eCommerce website to allow school students purchase seats for after-school classes
 
-## MISIS: M00983641
+<p>Class: CST3144</p>
 
-## Professor: Dr. Chinnu Mary George
+<p>Name: Aman Mishra</p>
+
+<p>MISIS: M00983641</p>
+
+<p>Professor: Dr. Chinnu Mary George</p>
 
 ### Links for submission:-
 
@@ -12,6 +16,7 @@
 -   <p>GitHub Repo Backend: https://github.com/MrRox1337/After-School-Webservice</p>
 -   <p>Deployed Frontend: https://mrrox1337.github.io/After-School-Course-Selector/</p>
 -   <p>Deployed Backend Collection for Subjects: https://after-school-webservice.onrender.com/collection/subjects/</p>
+-   <p>Deployed Backend Collection for Orders: https://after-school-webservice.onrender.com/collection/orders/</p>
 
 ### Database Collection Document Preview:-
 
